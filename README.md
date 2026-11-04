@@ -2,7 +2,7 @@
 
 Un parcours interactif en français pour apprendre Django en construisant **Musculor**, le site d’un réseau de centres sportifs.
 
-**[Ouvrir le site](https://django-atelier-yuva.speedydog5.chatgpt.site)** — l’espace publié est privé et demande une connexion avec ChatGPT.
+**[Ouvrir le site sur GitHub Pages](https://juba-3.github.io/django-atelier/)**
 
 ![Aperçu de Django Atelier](docs/django-atelier-apercu.jpg)
 
@@ -43,6 +43,12 @@ python3 -m http.server 8000 --directory dist
 Ouvrir ensuite **[http://localhost:8000](http://localhost:8000)**. Arrêter le serveur avec `Ctrl+C`.
 
 Utiliser un serveur HTTP permet à l’application de charger `lessons.json`. Les polices web sont chargées depuis Google Fonts, avec des polices de secours.
+
+## Publication sur GitHub Pages
+
+GitHub Pages publie le contenu de la branche `gh-pages`, depuis le dossier `/(root)`. Sa racine contient les fichiers de `main/dist/` ainsi qu’un fichier `.nojekyll` vide.
+
+Pour mettre le site à jour, reporter les fichiers actualisés de `main/dist/` à la racine de `gh-pages`, puis publier un commit sur cette branche. **Modifier `main/dist/` seul ne redéploie pas le site : la branche `gh-pages` doit aussi être actualisée.**
 
 ## Progression et notes
 
