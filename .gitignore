@@ -1,0 +1,19 @@
+# Secrets et configuration locale
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Métadonnées d’hébergement spécifiques à ChatGPT Sites
+.openai/
+
+# Dépendances et fichiers temporaires
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+*.log

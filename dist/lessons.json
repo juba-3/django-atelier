@@ -1,0 +1,2553 @@
+[
+  {
+    "id": "f1",
+    "moduleId": "fondations",
+    "order": 1,
+    "title": "Comprendre Django : framework, MVT et ORM",
+    "shortTitle": "La carte de Django",
+    "duration": 14,
+    "pages": "2–6",
+    "intro": "Avant d’écrire une ligne de code, regarde le trajet d’une demande : quelqu’un ouvre une page de Musculor, Django choisit le traitement à effectuer, puis renvoie une réponse. Le framework, l’architecture MVT et l’ORM t’aident chacun à organiser une partie de ce trajet.",
+    "objectives": [
+      "Distinguer le rôle du navigateur et du serveur.",
+      "Attribuer une responsabilité au modèle, à la vue et au template.",
+      "Relier les opérations CRUD aux données du projet Musculor."
+    ],
+    "sections": [
+      {
+        "title": "Un cadre de travail pour construire le serveur",
+        "body": "Django est un framework web écrit en Python. Il fournit des mécanismes de routage, d’accès aux données, de formulaires et d’authentification que ton application assemble. Le navigateur reçoit généralement du HTML, du CSS et du JavaScript ; il ne reçoit pas le code Python du serveur. Tu écris surtout les règles propres à Musculor : quels centres afficher, quelles informations demander et qui peut les modifier. Réutiliser les outils du framework réduit la répétition, mais ne dispense pas de comprendre leur configuration.",
+        "bullets": [
+          "Le client envoie une requête HTTP.",
+          "Le serveur Django exécute la logique Python.",
+          "La réponse peut être du HTML, du JSON, une redirection ou une erreur."
+        ]
+      },
+      {
+        "title": "MVT : trois responsabilités complémentaires",
+        "body": "Le modèle décrit les données et leur comportement, par exemple un Centre avec son nom et son pays. La vue reçoit une requête et coordonne le traitement : lecture des centres, choix du template et retour de la réponse. Le template décrit la présentation HTML. Cette séparation évite de mélanger règles métier et mise en page. Les fichiers models.py et views.py sont les emplacements conventionnels ; Django n’interdit pas mécaniquement toute autre organisation Python, mais ces conventions rendent le projet beaucoup plus lisible.",
+        "bullets": [
+          "Modèle : structure et accès aux données.",
+          "Vue : logique de traitement d’une requête.",
+          "Template : présentation des données au visiteur."
+        ]
+      },
+      {
+        "title": "Le trajet d’une première requête",
+        "body": "Quand le navigateur demande /centres/, Django consulte les règles d’URL pour trouver une vue. Celle-ci peut consulter un modèle, puis fournir un contexte à un template. Le résultat devient une réponse HTTP. Toutes les vues n’utilisent pas une base de données ni un template : cet exemple minimal renvoie directement un texte. Nous le brancherons à une URL dans la leçon sur les vues.",
+        "code": "from django.http import HttpResponse\n\ndef accueil(request):\n    return HttpResponse(\"Bienvenue chez Musculor\")",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "L’ORM et notre projet fil rouge",
+        "body": "L’ORM permet d’exprimer des opérations sur une base relationnelle avec des objets Python. Pour Musculor, un objet Centre représentera une ligne ; sa propriété nom correspondra à un champ. Créer, lire, modifier et supprimer forment le CRUD. L’ORM construit les requêtes SQL adaptées, sans faire disparaître les notions de clé primaire, de relation ou de contrainte. Tu peux donc réutiliser tes repères en SQL pour comprendre ce qui se passe. Dans les prochains modules, nous passerons de données d’exemple à une véritable interface de gestion.",
+        "code": "# Exemple à utiliser après la création du modèle Centre\ncentres_francais = Centre.objects.filter(pays=\"France\")",
+        "language": "python",
+        "filename": "Lecture avec l’ORM"
+      }
+    ],
+    "takeaway": "L’URL choisit une vue ; la vue coordonne les données et leur présentation ; l’ORM relie les objets Python à la base.",
+    "exercise": {
+      "prompt": "Quel fichier accueille conventionnellement les fonctions qui traitent les requêtes ?",
+      "code": "# centres/___\ndef accueil(request):\n    return HttpResponse(\"Bonjour\")",
+      "answers": [
+        "views.py"
+      ],
+      "hint": "Il porte le nom anglais de « vues ».",
+      "explanation": "Les fonctions de vue sont généralement regroupées dans views.py. Le fichier urls.py les associe ensuite à des adresses."
+    },
+    "quiz": [
+      {
+        "question": "Dans Musculor, où définir les champs nom et pays d’un centre ?",
+        "options": [
+          "Dans un template HTML.",
+          "Dans un modèle Django.",
+          "Dans le fichier CSS.",
+          "Dans les paramètres du navigateur."
+        ],
+        "correct": 1,
+        "hint": "Ces informations constituent la structure des données.",
+        "explanation": "Un modèle décrit les champs persistés. Le template affiche leurs valeurs, tandis que la vue coordonne leur récupération."
+      },
+      {
+        "question": "Une vue doit-elle toujours consulter la base de données ?",
+        "options": [
+          "Oui, même pour afficher un message.",
+          "Oui, sauf en production.",
+          "Non, elle peut retourner directement une réponse HTTP.",
+          "Non, car seule une URL peut consulter la base."
+        ],
+        "correct": 2,
+        "hint": "Observe la fonction accueil de cette leçon.",
+        "explanation": "Une vue peut simplement renvoyer HttpResponse. L’accès aux modèles et aux templates dépend du traitement nécessaire."
+      },
+      {
+        "question": "Que fait principalement l’ORM ?",
+        "options": [
+          "Il traduit des opérations sur des objets Python en opérations sur la base relationnelle.",
+          "Il remplace le navigateur.",
+          "Il transforme tous les fichiers Python en HTML.",
+          "Il garantit qu’aucune requête ne sera jamais lente."
+        ],
+        "correct": 0,
+        "hint": "Pense au lien entre un objet Centre et une ligne de table.",
+        "explanation": "L’ORM fournit une API Python pour lire et modifier les données. Comprendre les requêtes et les relations reste utile pour leur justesse et leurs performances."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Que signifie MVT ?",
+        "back": "Modèle, Vue, Template : données, logique de requête et présentation."
+      },
+      {
+        "front": "Quelles sont les quatre opérations CRUD ?",
+        "back": "Create, Read, Update, Delete : créer, lire, modifier et supprimer."
+      }
+    ]
+  },
+  {
+    "id": "f2",
+    "moduleId": "fondations",
+    "order": 2,
+    "title": "Préparer Python, pip et un environnement virtuel",
+    "shortTitle": "Installer proprement",
+    "duration": 15,
+    "pages": "6–10",
+    "intro": "Un environnement virtuel donne à Musculor ses propres dépendances. Tu peux ainsi apprendre Django sans modifier les bibliothèques d’un autre projet. Commence dans un terminal et vérifie chaque étape avant de poursuivre.",
+    "objectives": [
+      "Vérifier l’interpréteur Python et son gestionnaire pip.",
+      "Créer et activer un environnement virtuel adapté à ton système.",
+      "Installer Django 5.2 et enregistrer les dépendances."
+    ],
+    "sections": [
+      {
+        "title": "Identifier le bon Python",
+        "body": "Python exécute ton code ; pip installe ses bibliothèques. Sous Linux ou macOS, la commande disponible est souvent python3. Sous Windows, le lanceur py est fréquent. Vérifie la version au lieu de supposer que le nom python désigne le bon interpréteur. Python 3.12 convient aux exemples de ce parcours. La forme python -m pip est utile : elle lance pip avec le même Python que celui qui exécutera ton projet.",
+        "code": "# Linux / macOS\npython3 --version\npython3 -m pip --version\n\n# Windows, si le lanceur py est installé\npy --version\npy -m pip --version",
+        "language": "bash",
+        "filename": "Terminal"
+      },
+      {
+        "title": "Créer un environnement sur Linux ou macOS",
+        "body": "Place-toi dans le dossier de travail de Musculor avant de créer .venv. Ce dossier contient l’environnement isolé, pas le code de ton application. L’activation adapte les commandes de la session de terminal ; elle ne transforme pas toute la machine. Après activation, utilise python pour viser cet environnement. Si le module venv manque sur ta distribution, installe le paquet correspondant via le gestionnaire de ton système, puis reprends ces commandes.",
+        "code": "mkdir musculor\ncd musculor\npython3 -m venv .venv\nsource .venv/bin/activate\npython --version\npython -m pip --version",
+        "language": "bash",
+        "filename": "Terminal Linux / macOS"
+      },
+      {
+        "title": "L’équivalent sous Windows",
+        "body": "Avec PowerShell, active le script Activate.ps1 ; avec l’invite de commandes classique, utilise activate.bat. Ces commandes ne sont pas interchangeables avec source, qui appartient aux shells Unix. Si PowerShell bloque l’exécution d’un script, l’invite de commandes classique constitue une alternative pour cette séance. L’activation est une commodité : tu peux aussi appeler directement le Python présent dans .venv. Pour quitter l’environnement actif, utilise deactivate.",
+        "code": "# Dans PowerShell, depuis ton dossier musculor\npy -m venv .venv\n.\\.venv\\Scripts\\Activate.ps1\n\n# Alternative dans l’invite de commandes cmd\n# .venv\\Scripts\\activate.bat",
+        "language": "bash",
+        "filename": "Terminal Windows"
+      },
+      {
+        "title": "Installer et retrouver les mêmes dépendances",
+        "body": "Le parcours utilise la branche Django 5.2 LTS. La contrainte ci-dessous accepte ses correctifs tout en évitant de changer de branche majeure pendant l’apprentissage. Vérifie ensuite la version réellement installée. Le fichier requirements.txt constitue un relevé des dépendances de cet environnement : il permet de les réinstaller avec pip install -r. Conserve ce fichier avec le code, mais ne copie pas tout le dossier .venv sur une autre machine.",
+        "code": "python -m pip install \"Django>=5.2,<5.3\"\npython -m django --version\npython -m pip freeze > requirements.txt\n\n# Pour reconstituer les dépendances dans un autre environnement\n# python -m pip install -r requirements.txt",
+        "language": "bash",
+        "filename": "Terminal — environnement actif",
+        "callout": "Les commandes présentées ici sont à exécuter sur ta machine. Les ateliers du site restent des simulations guidées."
+      }
+    ],
+    "takeaway": "Un projet, un environnement virtuel ; après activation, python -m pip maintient l’interpréteur et ses dépendances cohérents.",
+    "exercise": {
+      "prompt": "Complète le nom du module standard qui crée un environnement virtuel.",
+      "code": "python3 -m ___ .venv",
+      "answers": [
+        "venv"
+      ],
+      "hint": "Son nom abrège « virtual environment ».",
+      "explanation": "Le module venv crée un environnement Python isolé. Il faut ensuite l’activer avec la commande adaptée à ton shell."
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi installer Django dans .venv ?",
+        "options": [
+          "Pour héberger le site sur Internet.",
+          "Pour isoler les dépendances du projet.",
+          "Pour remplacer tous les fichiers Python.",
+          "Pour stocker les comptes des utilisateurs."
+        ],
+        "correct": 1,
+        "hint": "Deux projets peuvent utiliser des versions différentes d’une bibliothèque.",
+        "explanation": "L’environnement virtuel sépare les dépendances. Il n’est ni une base de données ni un hébergement."
+      },
+      {
+        "question": "Quelle commande active .venv dans un terminal Bash sous Linux ?",
+        "options": [
+          "activate .venv",
+          "python activate.py",
+          "source .venv/bin/activate",
+          "pip activate .venv"
+        ],
+        "correct": 2,
+        "hint": "Le script d’activation se trouve dans le dossier bin.",
+        "explanation": "source charge le script dans la session courante du shell. Sous Windows, le chemin et la commande dépendent du terminal."
+      },
+      {
+        "question": "À quoi sert python -m pip freeze > requirements.txt ?",
+        "options": [
+          "À démarrer le serveur.",
+          "À effacer les dépendances inutilisées.",
+          "À bloquer définitivement l’interpréteur.",
+          "À enregistrer les versions des paquets installés."
+        ],
+        "correct": 3,
+        "hint": "Le symbole > écrit le résultat de la commande dans un fichier.",
+        "explanation": "pip freeze produit un relevé des paquets installés. requirements.txt peut ensuite servir à recréer les dépendances."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Comment vérifier la version de Django dans l’environnement actif ?",
+        "back": "python -m django --version"
+      },
+      {
+        "front": "Quelle commande quitte un environnement virtuel activé ?",
+        "back": "deactivate"
+      }
+    ]
+  },
+  {
+    "id": "f3",
+    "moduleId": "fondations",
+    "order": 3,
+    "title": "Créer le projet Musculor et ses applications",
+    "shortTitle": "Organiser le projet",
+    "duration": 20,
+    "pages": "11–18",
+    "intro": "Le projet regroupe la configuration du site ; les applications portent ses fonctionnalités. Nous créons centres pour le catalogue et préparons accounts pour la connexion. Ce petit choix initial évite de remplacer le modèle utilisateur après la création de la base.",
+    "objectives": [
+      "Distinguer projet Django et application Django.",
+      "Repérer les fichiers de configuration et les fichiers métier.",
+      "Initialiser le modèle utilisateur avant les premières migrations."
+    ],
+    "sections": [
+      {
+        "title": "Générer le projet et deux applications",
+        "body": "Depuis le dossier musculor, avec .venv actif et Django installé, startproject crée la configuration globale. Le point final place manage.py dans le dossier courant plutôt que dans un niveau supplémentaire. startapp crée ensuite les fichiers de chaque fonctionnalité. centres contiendra le catalogue des salles ; accounts accueillera les comptes. Une application est un paquet Python, pas un second serveur : plusieurs applications peuvent participer au même site.",
+        "code": "python -m django startproject musculor .\npython manage.py startapp centres\npython manage.py startapp accounts",
+        "language": "bash",
+        "filename": "Terminal — dossier musculor",
+        "bullets": [
+          "manage.py : commandes de gestion du projet.",
+          "musculor/settings.py : configuration globale.",
+          "musculor/urls.py : routage principal.",
+          "centres/models.py et centres/views.py : données et vues du catalogue."
+        ]
+      },
+      {
+        "title": "Préparer l’utilisateur dès le départ",
+        "body": "Django fournit déjà une structure d’utilisateur avec nom de connexion, mot de passe et permissions. Pour garder la possibilité de l’étendre proprement, crée cette sous-classe minimale avant toute commande migrate. pass signifie que nous ne lui ajoutons encore aucun champ. L’authentification sera expliquée dans la partie 4 ; à ce stade, tu poses simplement une fondation du projet neuf. Si tu as déjà une base et des utilisateurs, ne change pas ce paramètre sans une stratégie de migration adaptée.",
+        "code": "from django.contrib.auth.models import AbstractUser\n\nclass User(AbstractUser):\n    pass",
+        "language": "python",
+        "filename": "accounts/models.py"
+      },
+      {
+        "title": "Déclarer les applications et les réglages",
+        "body": "Django doit connaître les applications et le modèle utilisateur choisis. Ajoute les réglages ci-dessous au fichier généré en conservant ses applications et ses middlewares existants. AUTH_USER_MODEL désigne l’application accounts et la classe User. SQLite, déjà configuré, convient au projet d’apprentissage. La langue concerne notamment les messages du framework ; le fuseau horaire précise le contexte d’affichage des dates. Évite de recopier un fichier settings.py incomplet qui ferait disparaître la configuration de base.",
+        "code": "# À ajouter dans le settings.py généré\nINSTALLED_APPS += [\"centres\", \"accounts\"]\nAUTH_USER_MODEL = \"accounts.User\"\nLANGUAGE_CODE = \"fr\"\nTIME_ZONE = \"Europe/Paris\"",
+        "language": "python",
+        "filename": "musculor/settings.py"
+      },
+      {
+        "title": "Créer la base puis lancer le serveur",
+        "body": "makemigrations accounts crée le fichier décrivant le modèle utilisateur ; migrate applique ensuite les migrations nécessaires à la base. Nous détaillerons ce mécanisme dans la partie données. Lance enfin runserver et ouvre l’adresse affichée dans le terminal, habituellement http://127.0.0.1:8000/. Le serveur de développement recharge les changements courants ; Ctrl+C l’arrête. La page d’accueil de Django confirme que la configuration fonctionne, mais ce serveur de développement n’est pas une configuration de production.",
+        "code": "python manage.py makemigrations accounts\npython manage.py migrate\npython manage.py check\npython manage.py runserver",
+        "language": "bash",
+        "filename": "Terminal",
+        "callout": "Le modèle accounts.User est préparé maintenant, avant les migrations. Ses usages et son extension sont étudiés dans la partie 4."
+      }
+    ],
+    "takeaway": "Le projet configure l’ensemble ; chaque application porte une fonction. Le modèle utilisateur choisi doit être configuré avant la première migration.",
+    "exercise": {
+      "prompt": "Complète la commande qui crée l’application centres dans le projet existant.",
+      "code": "python manage.py ___ centres",
+      "answers": [
+        "startapp"
+      ],
+      "hint": "Tu démarres une application, pas un projet.",
+      "explanation": "startapp crée une application Django. startproject crée la configuration d’un nouveau projet."
+    },
+    "quiz": [
+      {
+        "question": "Quel fichier porte la configuration globale de Musculor ?",
+        "options": [
+          "centres/views.py",
+          "centres/admin.py",
+          "musculor/settings.py",
+          "templates/base.html"
+        ],
+        "correct": 2,
+        "hint": "Cherche le nom anglais des réglages.",
+        "explanation": "settings.py définit notamment les applications installées, la base, la langue et les paramètres d’authentification."
+      },
+      {
+        "question": "Quand choisir accounts.User comme AUTH_USER_MODEL pour ce projet neuf ?",
+        "options": [
+          "Avant les premières migrations.",
+          "Après avoir créé tous les utilisateurs.",
+          "Seulement après la mise en production.",
+          "Uniquement si une page renvoie une erreur 404."
+        ],
+        "correct": 0,
+        "hint": "La structure initiale de la base dépend de ce choix.",
+        "explanation": "Le modèle utilisateur personnalisé doit être fixé au démarrage. Le remplacer sur une base existante demande une migration complexe."
+      },
+      {
+        "question": "Que fait runserver ?",
+        "options": [
+          "Il publie automatiquement le site.",
+          "Il lance un serveur pour développer et tester localement.",
+          "Il crée une application.",
+          "Il applique toujours les migrations manquantes."
+        ],
+        "correct": 1,
+        "hint": "L’adresse affichée est généralement 127.0.0.1:8000.",
+        "explanation": "runserver facilite le développement local. Il n’applique pas automatiquement les migrations et n’est pas un serveur de production."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Projet et application : quelle différence ?",
+        "back": "Le projet rassemble configuration et routage ; une application regroupe une fonctionnalité métier."
+      },
+      {
+        "front": "Que contient AUTH_USER_MODEL pour Musculor ?",
+        "back": "\"accounts.User\", configuré avant la première commande migrate."
+      }
+    ]
+  },
+  {
+    "id": "f4",
+    "moduleId": "fondations",
+    "order": 4,
+    "title": "Relier une URL à une première vue",
+    "shortTitle": "URLs et réponses",
+    "duration": 14,
+    "pages": "19–21",
+    "intro": "Une adresse n’affiche rien par elle-même. Il faut une règle qui l’associe à une fonction, puis une réponse retournée par cette fonction. Tu vas relier /centres/ à la première vue de Musculor.",
+    "objectives": [
+      "Écrire une vue qui retourne HttpResponse.",
+      "Relier une route d’application au routage du projet.",
+      "Nommer les routes pour les réutiliser sans recopier leurs chemins."
+    ],
+    "sections": [
+      {
+        "title": "Une vue reçoit une requête et retourne une réponse",
+        "body": "La fonction accueil reçoit request, un objet décrivant la requête HTTP. Pour commencer, elle renvoie un contenu directement avec HttpResponse. Il ne suffit pas d’afficher un texte avec print : print écrit dans le terminal du serveur, alors que return transmet la réponse au navigateur. Une vue peut s’appuyer sur plusieurs traitements Python, mais son résultat attendu reste une réponse HTTP ou une exception gérée par Django.",
+        "code": "from django.http import HttpResponse\n\ndef accueil(request):\n    return HttpResponse(\"<h1>Les centres Musculor</h1>\")",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "Créer le routeur de l’application",
+        "body": "Crée centres/urls.py, qui n’est pas généré automatiquement par startapp. path associe un fragment d’adresse à une vue. Le chemin vide représente la racine de l’application. On transmet views.accueil sans parenthèses, car Django doit appeler la fonction lorsque la requête arrive. Le nom accueil sert de référence stable ; app_name ajoute l’espace de noms centres pour éviter des collisions avec une autre application.",
+        "code": "from django.urls import path\nfrom . import views\n\napp_name = \"centres\"\nurlpatterns = [\n    path(\"\", views.accueil, name=\"accueil\"),\n]",
+        "language": "python",
+        "filename": "centres/urls.py"
+      },
+      {
+        "title": "Brancher l’application dans le projet",
+        "body": "Le routage principal délègue le préfixe centres/ au routeur de l’application grâce à include. Django consomme ce préfixe puis cherche la suite dans centres/urls.py. Le chemin vide de l’application produit donc l’adresse complète /centres/. Garde la route admin/ créée par le projet. Cette organisation permet d’ajouter plus tard /centres/3/ ou /centres/creer/ sans alourdir le routeur global.",
+        "code": "from django.contrib import admin\nfrom django.urls import include, path\n\nurlpatterns = [\n    path(\"admin/\", admin.site.urls),\n    path(\"centres/\", include(\"centres.urls\")),\n]",
+        "language": "python",
+        "filename": "musculor/urls.py"
+      },
+      {
+        "title": "Comprendre ce que tu observes",
+        "body": "Avec runserver actif, ouvre /centres/ : le navigateur reçoit la réponse de ta vue. Si tu ouvres une adresse sans règle correspondante, Django produit une réponse 404. Cela ne signifie pas nécessairement que le serveur est arrêté. Si une erreur Python apparaît, lis le message et le fichier indiqué. Vérifie d’abord l’import, le nom de la vue et le préfixe. Les routes sont examinées dans l’ordre ; évite les règles trop générales avant les plus précises.",
+        "bullets": [
+          "Adresse complète : http://127.0.0.1:8000/centres/",
+          "Nom réutilisable de cette route : centres:accueil.",
+          "Une fonction de vue est référencée sans l’appeler dans urlpatterns."
+        ]
+      }
+    ],
+    "takeaway": "path relie un chemin à une vue ; include répartit le routage ; le nom de route reste stable même si son adresse évolue.",
+    "exercise": {
+      "prompt": "Quelle fonction permet de déléguer les routes centres/ au fichier centres.urls ?",
+      "code": "path(\"centres/\", ___(\"centres.urls\"))",
+      "answers": [
+        "include"
+      ],
+      "hint": "Le nom signifie « inclure ».",
+      "explanation": "include transmet la partie restante du chemin au routeur de l’application."
+    },
+    "quiz": [
+      {
+        "question": "Quelle écriture convient dans urlpatterns ?",
+        "options": [
+          "path('', views.accueil(), name='accueil')",
+          "path('', views.accueil, name='accueil')",
+          "path('', print('Bonjour'))",
+          "path('', 'accueil.html')"
+        ],
+        "correct": 1,
+        "hint": "Django doit pouvoir appeler la vue plus tard.",
+        "explanation": "On transmet la fonction views.accueil. Les parenthèses l’exécuteraient immédiatement, sans requête."
+      },
+      {
+        "question": "Le projet inclut centres.urls sous centres/ et l’application définit le chemin vide. Quelle URL ouvre la vue ?",
+        "options": [
+          "/accueil/",
+          "/musculor/centres/",
+          "/centres/",
+          "/centres/urls.py/"
+        ],
+        "correct": 2,
+        "hint": "Additionne le préfixe du projet et le chemin de l’application.",
+        "explanation": "Le préfixe centres/ suivi d’un chemin vide donne /centres/."
+      },
+      {
+        "question": "Pourquoi donner un name à une route ?",
+        "options": [
+          "Pour pouvoir la retrouver par un identifiant stable dans les liens et redirections.",
+          "Pour choisir le titre de l’onglet du navigateur.",
+          "Pour créer une table dans la base.",
+          "Pour authentifier automatiquement les visiteurs."
+        ],
+        "correct": 0,
+        "hint": "Cela évite de recopier le chemin partout.",
+        "explanation": "Les noms de route permettent à Django de construire l’URL correcte, y compris après une modification de son chemin."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Que reçoit une vue Django en premier argument ?",
+        "back": "request, l’objet qui représente la requête HTTP."
+      },
+      {
+        "front": "À quoi sert include dans urls.py ?",
+        "back": "À déléguer un préfixe d’URL au routeur d’une application."
+      }
+    ]
+  },
+  {
+    "id": "f5",
+    "moduleId": "fondations",
+    "order": 5,
+    "title": "Construire des templates et un squelette commun",
+    "shortTitle": "Templates et héritage",
+    "duration": 18,
+    "pages": "21–26",
+    "intro": "Écrire toute une page dans HttpResponse devient vite difficile à maintenir. Les templates séparent la structure HTML de la logique Python. Avec un squelette commun, le menu et la présentation générale de Musculor restent cohérents sur chaque page.",
+    "objectives": [
+      "Placer les templates dans les dossiers reconnus par Django.",
+      "Utiliser render pour produire une réponse HTML.",
+      "Partager une structure avec extends, block et include."
+    ],
+    "sections": [
+      {
+        "title": "Organiser les fichiers HTML",
+        "body": "Place le squelette commun dans templates/base.html à la racine du projet. Les pages du catalogue peuvent vivre dans centres/templates/centres/. Le deuxième dossier centres évite qu’un accueil.html d’une autre application soit confondu avec le nôtre. Le réglage APP_DIRS=True, présent dans le projet généré, permet de chercher dans les dossiers templates des applications déclarées. Ajoute aussi le dossier global dans DIRS, en conservant les autres réglages du moteur.",
+        "code": "# Conserver les autres éléments de TEMPLATES\nTEMPLATES[0][\"DIRS\"] = [BASE_DIR / \"templates\"]",
+        "language": "python",
+        "filename": "musculor/settings.py",
+        "bullets": [
+          "templates/base.html : structure partagée.",
+          "templates/menu.html : fragment de navigation facultatif.",
+          "centres/templates/centres/accueil.html : contenu du catalogue."
+        ]
+      },
+      {
+        "title": "Définir les emplacements variables",
+        "body": "Le template de base contient une vraie structure HTML et les éléments communs. Les blocs définissent les zones que les pages enfants pourront remplacer. Ici, title personnalise le titre de l’onglet et content accueille le contenu principal. Un include peut charger un fragment comme un menu ; il ne remplace pas l’héritage de page. Commence avec une base courte pour bien voir où chaque élément se retrouve dans le document final.",
+        "code": "<!doctype html>\n<html lang=\"fr\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>{% block title %}Musculor{% endblock %}</title>\n</head>\n<body>\n  <nav><a href=\"{% url 'centres:accueil' %}\">Musculor</a></nav>\n  <main>{% block content %}{% endblock %}</main>\n</body>\n</html>",
+        "language": "html",
+        "filename": "templates/base.html"
+      },
+      {
+        "title": "Hériter de la base",
+        "body": "La page enfant indique son parent avec extends, à placer en première balise de template. Elle définit ensuite seulement les blocs qu’elle veut compléter ou remplacer. Il n’est plus nécessaire de recopier html, head, le menu et le pied de page dans chaque fichier. Une modification de la base se répercutera sur ses enfants. Si un bloc enfant porte un nom différent de celui du parent, son contenu ne sera pas inséré à l’endroit attendu.",
+        "code": "{% extends \"base.html\" %}\n\n{% block title %}Nos centres · Musculor{% endblock %}\n\n{% block content %}\n  <h1>{{ titre }}</h1>\n  <p>Trouve ton prochain espace d’entraînement.</p>\n{% endblock %}",
+        "language": "html",
+        "filename": "centres/templates/centres/accueil.html"
+      },
+      {
+        "title": "Produire la réponse avec render",
+        "body": "La vue choisit maintenant le template et lui transmet un dictionnaire de contexte. La clé titre devient une variable accessible dans le HTML avec des doubles accolades. render charge le template, le combine avec ce contexte et retourne une réponse HTTP. Le navigateur reçoit le HTML obtenu, pas les balises extends ou les expressions Django. En cas de TemplateDoesNotExist, vérifie le chemin, l’orthographe, INSTALLED_APPS et les dossiers de recherche avant de déplacer les fichiers au hasard.",
+        "code": "from django.shortcuts import render\n\ndef accueil(request):\n    contexte = {\"titre\": \"Les centres Musculor\"}\n    return render(request, \"centres/accueil.html\", contexte)",
+        "language": "python",
+        "filename": "centres/views.py"
+      }
+    ],
+    "takeaway": "render relie la vue au template ; extends réutilise une structure ; block définit les zones que chaque page personnalise.",
+    "exercise": {
+      "prompt": "Complète la balise qui fait hériter la page du squelette commun.",
+      "code": "{% ___ \"base.html\" %}",
+      "answers": [
+        "extends"
+      ],
+      "hint": "Cette balise annonce le template parent.",
+      "explanation": "extends choisit le parent. Les blocs définis dans la page enfant prennent place dans les emplacements correspondants du parent."
+    },
+    "quiz": [
+      {
+        "question": "Que retourne render(request, template, contexte) ?",
+        "options": [
+          "Seulement le chemin du fichier HTML.",
+          "Une réponse HTTP contenant le template rendu.",
+          "Une nouvelle table SQL.",
+          "Un navigateur."
+        ],
+        "correct": 1,
+        "hint": "La vue doit produire quelque chose à envoyer au client.",
+        "explanation": "render combine le template et le contexte puis renvoie un objet HttpResponse."
+      },
+      {
+        "question": "Où modifier un menu commun présent dans base.html ?",
+        "options": [
+          "Dans chaque vue.",
+          "Dans chaque page enfant.",
+          "Une seule fois dans base.html.",
+          "Dans la base de données uniquement."
+        ],
+        "correct": 2,
+        "hint": "L’héritage évite de dupliquer la structure.",
+        "explanation": "Les pages qui héritent de base.html réutilisent son menu. Une seule modification suffit."
+      },
+      {
+        "question": "Quelle différence entre extends et include ?",
+        "options": [
+          "Aucune, les deux sont interchangeables partout.",
+          "extends hérite d’une structure ; include insère un fragment.",
+          "include crée une migration ; extends la lance.",
+          "extends est du JavaScript ; include du Python."
+        ],
+        "correct": 1,
+        "hint": "Une page parent et un morceau de menu n’ont pas le même rôle.",
+        "explanation": "L’héritage définit la structure parent/enfant et ses blocs. include rend un autre template à l’emplacement de la balise."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle syntaxe affiche une variable de contexte ?",
+        "back": "{{ nom_de_variable }} dans le template."
+      },
+      {
+        "front": "Où chercher si TemplateDoesNotExist apparaît ?",
+        "back": "Vérifier le chemin du fichier, DIRS, APP_DIRS et l’application dans INSTALLED_APPS."
+      }
+    ]
+  },
+  {
+    "id": "f6",
+    "moduleId": "fondations",
+    "order": 6,
+    "title": "Afficher des variables, des conditions et des boucles",
+    "shortTitle": "Rendre la page dynamique",
+    "duration": 16,
+    "pages": "27–30",
+    "intro": "Une seule carte HTML peut afficher toute la liste des centres. La vue fournit les données ; le langage de templates décrit leur affichage. Tu vas ajouter une boucle, une condition et un état vide à la page Musculor.",
+    "objectives": [
+      "Passer une liste structurée dans le contexte d’une vue.",
+      "Utiliser for, if et empty dans un template.",
+      "Distinguer logique métier, présentation et échappement HTML."
+    ],
+    "sections": [
+      {
+        "title": "Préparer des données lisibles dans la vue",
+        "body": "Pour apprendre la syntaxe sans dépendre d’une base, commence avec une liste de dictionnaires. Chaque dictionnaire possède des clés explicites, plus faciles à relire que des positions comme 0 ou 1. La clé centres du contexte donne son nom à la variable disponible dans le template. Plus tard, un QuerySet remplacera la liste sans changer l’idée générale : la vue fournit une collection, et le template parcourt ses éléments.",
+        "code": "from django.shortcuts import render\n\ndef accueil(request):\n    centres = [\n        {\"nom\": \"Musculor Paris\", \"pays\": \"France\"},\n        {\"nom\": \"Musculor Alger\", \"pays\": \"Algérie\"},\n    ]\n    return render(request, \"centres/accueil.html\", {\"centres\": centres})",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "Répéter une structure avec for",
+        "body": "La balise for parcourt la collection. À chaque tour, centre représente l’élément courant ; centre.nom accède à sa valeur nom. Les doubles accolades affichent une valeur, tandis que les délimiteurs {% %} portent une instruction de template. empty fournit un message utile quand la collection est vide. Cette branche évite une grande zone blanche et explique au visiteur ce qu’il peut attendre.",
+        "code": "{% for centre in centres %}\n  <article>\n    <h2>{{ centre.nom }}</h2>\n    <p>{{ centre.pays }}</p>\n  </article>\n{% empty %}\n  <p>Aucun centre à afficher pour le moment.</p>\n{% endfor %}",
+        "language": "html",
+        "filename": "Bloc content de centres/accueil.html"
+      },
+      {
+        "title": "Ajouter une condition de présentation",
+        "body": "Une condition if permet de montrer un élément selon les données. Par exemple, un badge peut signaler un centre situé en France. Le langage de templates ressemble à Python, mais ce n’est pas une zone où exécuter n’importe quel code Python. Pour filtrer réellement une longue liste de centres, prépare plutôt la sélection dans la vue ou avec l’ORM. Garde le template concentré sur la manière de présenter les résultats déjà autorisés.",
+        "code": "{% if centre.pays == \"France\" %}\n  <span>Centre en France</span>\n{% else %}\n  <span>Centre à l’international</span>\n{% endif %}",
+        "language": "html",
+        "filename": "À l’intérieur de la boucle"
+      },
+      {
+        "title": "Présenter une valeur sans faire confiance à son contenu",
+        "body": "Les filtres de template transforment l’affichage, par exemple upper pour des majuscules ou default pour une valeur de remplacement. Django échappe le HTML des variables par défaut : un nom contenant une balise est affiché comme du texte, plutôt qu’exécuté comme du code. Ne désactive pas cette protection simplement pour rendre une description plus jolie. Un template peut masquer un bouton, mais cela ne remplace jamais les contrôles d’accès dans la vue.",
+        "code": "<h2>{{ centre.nom|upper }}</h2>\n<p>{{ centre.description|default:\"Description à venir.\" }}</p>",
+        "language": "html",
+        "filename": "Présentation d’un centre",
+        "callout": "Le langage de templates Django possède ses propres balises et filtres. Ce n’est pas du Python arbitraire exécuté dans le HTML."
+      }
+    ],
+    "takeaway": "Le contexte apporte les données ; les variables, boucles et conditions organisent leur présentation. Les règles d’accès restent côté serveur.",
+    "exercise": {
+      "prompt": "Quelle balise affiche un message lorsque la collection ne contient aucun élément ?",
+      "code": "{% for centre in centres %}\n  {{ centre.nom }}\n{% ___ %}\n  Aucun centre disponible.\n{% endfor %}",
+      "answers": [
+        "empty"
+      ],
+      "hint": "Son nom signifie « vide ».",
+      "explanation": "La branche empty est évaluée quand la boucle for ne possède aucun élément à parcourir."
+    },
+    "quiz": [
+      {
+        "question": "Quelle syntaxe affiche le nom du centre courant ?",
+        "options": [
+          "{% centre.nom %}",
+          "{{ centre.nom }}",
+          "<python>centre.nom</python>",
+          "[[ centre.nom ]]"
+        ],
+        "correct": 1,
+        "hint": "Les doubles accolades servent aux valeurs.",
+        "explanation": "{{ centre.nom }} affiche une variable. Les délimiteurs {% %} sont utilisés pour les balises de contrôle."
+      },
+      {
+        "question": "Tu veux retourner uniquement les centres français parmi des milliers de lignes. Où effectuer la sélection principale ?",
+        "options": [
+          "Dans un fichier CSS.",
+          "Dans la vue avec un filtre ORM adapté.",
+          "En cachant les cartes étrangères avec JavaScript.",
+          "Dans l’attribut title du navigateur."
+        ],
+        "correct": 1,
+        "hint": "Évite de charger des données inutiles simplement pour les masquer.",
+        "explanation": "Un filtre ORM sélectionne les enregistrements nécessaires. Le template présente ensuite ce résultat."
+      },
+      {
+        "question": "Masquer le bouton « Supprimer » dans un template empêche-t-il un visiteur d’appeler directement l’URL de suppression ?",
+        "options": [
+          "Oui, toujours.",
+          "Oui, si le bouton possède un identifiant.",
+          "Non, la vue doit aussi contrôler les droits.",
+          "Non, mais une couleur différente suffirait."
+        ],
+        "correct": 2,
+        "hint": "Le navigateur peut envoyer une requête sans cliquer sur ce bouton.",
+        "explanation": "L’interface guide l’utilisateur ; la sécurité est assurée par les vérifications exécutées côté serveur."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Comment gérer une collection vide dans une boucle de template ?",
+        "back": "Avec {% empty %} entre le contenu de la boucle et {% endfor %}."
+      },
+      {
+        "front": "Les templates Django exécutent-ils librement du Python ?",
+        "back": "Non. Ils utilisent un langage limité de variables, balises et filtres, adapté à la présentation."
+      }
+    ]
+  },
+  {
+    "id": "f7",
+    "moduleId": "fondations",
+    "order": 7,
+    "title": "Ajouter CSS, JavaScript et fichiers statiques",
+    "shortTitle": "Donner du style",
+    "duration": 14,
+    "pages": "31–35",
+    "intro": "Le HTML structure la page ; le CSS organise son apparence ; le JavaScript ajoute des comportements dans le navigateur. Django fournit un système pour retrouver leurs fichiers et construire les bonnes adresses.",
+    "objectives": [
+      "Organiser les ressources statiques dans l’application.",
+      "Construire leurs URLs avec la balise static.",
+      "Comprendre la différence entre développement, production et fichiers utilisateurs."
+    ],
+    "sections": [
+      {
+        "title": "Ranger les ressources par application",
+        "body": "Place les fichiers du catalogue dans centres/static/centres/. Le sous-dossier supplémentaire évite qu’un styles.css d’une autre application porte exactement le même chemin. Le projet généré inclut django.contrib.staticfiles, qui sait rechercher ces ressources. La valeur STATIC_URL définit leur préfixe d’URL ; elle ne représente pas un chemin sur ton disque. Les images choisies avec le code du site appartiennent à ces ressources, contrairement aux fichiers déposés plus tard par les utilisateurs.",
+        "code": "STATIC_URL = \"/static/\"",
+        "language": "python",
+        "filename": "musculor/settings.py",
+        "bullets": [
+          "centres/static/centres/styles.css",
+          "centres/static/centres/app.js",
+          "centres/static/centres/images/salle.jpg"
+        ]
+      },
+      {
+        "title": "Charger les ressources dans un template",
+        "body": "La balise load static rend disponible la balise static dans le template courant. Celle-ci construit l’adresse du fichier à partir de son chemin relatif. Évite de recopier manuellement /static/ dans tous tes liens : la configuration peut évoluer. Ajoute le CSS dans head et un script avec defer lorsque celui-ci doit attendre l’analyse du HTML. Un template enfant qui utilise lui-même static doit également charger cette bibliothèque.",
+        "code": "{% load static %}\n<link rel=\"stylesheet\" href=\"{% static 'centres/styles.css' %}\">\n<script src=\"{% static 'centres/app.js' %}\" defer></script>\n\n<img src=\"{% static 'centres/images/salle.jpg' %}\"\n     alt=\"Salle d’entraînement Musculor\"\n     width=\"800\" height=\"500\">",
+        "language": "html",
+        "filename": "Extraits de templates/base.html"
+      },
+      {
+        "title": "Écrire le style et vérifier le résultat",
+        "body": "Le CSS reste du CSS standard : Django n’en change pas les règles. Commence avec quelques styles clairement visibles, puis recharge la page. Si rien ne change, inspecte l’adresse du fichier et sa réponse dans l’onglet Réseau du navigateur. Une erreur 404 indique un problème de chemin ou de découverte ; un ancien contenu peut venir du cache. Relancer le serveur n’est pas la seule piste et ne corrige pas une faute dans le nom du fichier.",
+        "code": "body {\n  margin: 0;\n  font-family: system-ui, sans-serif;\n  color: #163c31;\n  background: #f4f7f4;\n}\nmain { max-width: 64rem; margin: auto; padding: 2rem; }\narticle { padding: 1.5rem; background: white; border-radius: 1rem; }",
+        "language": "css",
+        "filename": "centres/static/centres/styles.css"
+      },
+      {
+        "title": "Distinguer statique, médias et déploiement",
+        "body": "En développement, runserver avec DEBUG=True et staticfiles sert généralement ces fichiers pour toi. La mise en production nécessite une stratégie adaptée : collectstatic rassemble les ressources dans STATIC_ROOT, puis un service ou middleware de distribution les sert. Les médias envoyés par un utilisateur relèvent d’un autre stockage et d’autres règles. Une photo de profil téléchargée ne devient donc pas automatiquement un fichier statique de l’application.",
+        "code": "# Diagnostic : retrouver un fichier statique\npython manage.py findstatic centres/styles.css\n\n# En déploiement, après configuration de STATIC_ROOT\n# python manage.py collectstatic",
+        "language": "bash",
+        "filename": "Terminal"
+      }
+    ],
+    "takeaway": "Les fichiers statiques sont retrouvés par leur chemin relatif et liés avec static ; les fichiers envoyés par les utilisateurs sont des médias distincts.",
+    "exercise": {
+      "prompt": "Complète le chargement de la bibliothèque qui fournit la balise static.",
+      "code": "{% load ___ %}\n<link rel=\"stylesheet\" href=\"{% static 'centres/styles.css' %}\">",
+      "answers": [
+        "static"
+      ],
+      "hint": "Le nom de la bibliothèque est celui de la balise utilisée ensuite.",
+      "explanation": "{% load static %} charge les balises nécessaires pour générer les URLs des ressources statiques."
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi ranger le CSS dans centres/static/centres/styles.css ?",
+        "options": [
+          "Pour que le CSS soit transformé en Python.",
+          "Pour éviter les collisions de noms entre applications.",
+          "Pour empêcher toute mise en cache.",
+          "Pour créer automatiquement une page HTML."
+        ],
+        "correct": 1,
+        "hint": "Plusieurs applications peuvent avoir leur propre styles.css.",
+        "explanation": "Le chemin centres/styles.css constitue un espace de noms identifiable pour la ressource."
+      },
+      {
+        "question": "Une photo de profil déposée par un utilisateur est généralement…",
+        "options": [
+          "Un fichier média envoyé par l’utilisateur.",
+          "Une migration.",
+          "Un template système.",
+          "Un fichier statique obligatoirement livré avec le code."
+        ],
+        "correct": 0,
+        "hint": "Son contenu n’existe pas nécessairement au moment où le site est déployé.",
+        "explanation": "Les médias sont distincts des ressources statiques du code et nécessitent un stockage et des règles adaptés."
+      },
+      {
+        "question": "Que fait collectstatic ?",
+        "options": [
+          "Il convertit le CSS en HTML.",
+          "Il lance le serveur de développement.",
+          "Il rassemble les ressources statiques dans STATIC_ROOT.",
+          "Il supprime les images inutilisées de la base."
+        ],
+        "correct": 2,
+        "hint": "Cette étape prépare la distribution des ressources en production.",
+        "explanation": "collectstatic collecte les fichiers dans un emplacement configuré. Leur distribution effective reste à mettre en place."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle balise construit l’URL d’un fichier statique ?",
+        "back": "{% static 'centres/styles.css' %}, après {% load static %}."
+      },
+      {
+        "front": "Quelle commande aide à localiser un fichier statique ?",
+        "back": "python manage.py findstatic centres/styles.css"
+      }
+    ]
+  },
+  {
+    "id": "f8",
+    "moduleId": "fondations",
+    "order": 8,
+    "title": "Guider la navigation et traiter les erreurs 404",
+    "shortTitle": "Redirections et 404",
+    "duration": 15,
+    "pages": "36–39",
+    "intro": "Une bonne navigation donne au visiteur une suite logique : revenir à la liste après une action, ou comprendre qu’un élément n’existe plus. La redirection et la réponse 404 répondent à deux situations différentes.",
+    "objectives": [
+      "Créer des liens et redirections fondés sur les noms de route.",
+      "Distinguer réponse 404 et erreur de programmation.",
+      "Préparer une page 404 et comprendre le rôle de DEBUG."
+    ],
+    "sections": [
+      {
+        "title": "Construire un lien sans figer son adresse",
+        "body": "La balise url transforme un nom de route en adresse. Pour revenir au catalogue, utilise centres:accueil plutôt que recopier /centres/ dans tous les templates. Le résultat envoyé au navigateur est un lien HTML ordinaire. Cette approche est utile quand tu modifies la structure des chemins ou quand une application possède plusieurs vues de même nom. Si Django signale NoReverseMatch, vérifie le nom, l’espace de noms et les paramètres requis.",
+        "code": "<a href=\"{% url 'centres:accueil' %}\">Voir les centres</a>",
+        "language": "html",
+        "filename": "Un template Musculor"
+      },
+      {
+        "title": "Faire changer d’adresse au navigateur",
+        "body": "redirect renvoie une réponse indiquant au navigateur qu’il doit demander une autre URL. Par défaut, il s’agit d’une redirection temporaire 302. La page de destination sera rendue lors de la requête suivante ; redirect ne charge pas directement son template. Après un formulaire enregistré, ce mécanisme permet de revenir à une page de lecture et limite les réenvois lors d’un rafraîchissement. Nous l’utiliserons dans le CRUD.",
+        "code": "from django.shortcuts import redirect\n\ndef entree(request):\n    return redirect(\"centres:accueil\")\n\n# Dans musculor/urls.py, après import de cette vue :\n# path(\"\", entree, name=\"entree\"),",
+        "language": "python",
+        "filename": "Exemple de vue de redirection"
+      },
+      {
+        "title": "Retourner 404 pour un élément introuvable",
+        "body": "Une 404 signifie que la ressource demandée n’existe pas à cette adresse. Elle apparaît lorsqu’aucune route ne correspond, ou quand une vue constate qu’un centre demandé n’existe pas. Pour un modèle, get_object_or_404 récupère l’objet et traduit son absence en Http404. Il ne faut pas transformer toutes les exceptions en 404 : une faute de programmation reste une erreur à corriger. Cet exemple sera directement utile après la création de Centre.",
+        "code": "from django.shortcuts import get_object_or_404, render\nfrom .models import Centre\n\ndef detail(request, pk):\n    centre = get_object_or_404(Centre, pk=pk)\n    return render(request, \"centres/detail.html\", {\"centre\": centre})",
+        "language": "python",
+        "filename": "centres/views.py — aperçu de la partie CRUD"
+      },
+      {
+        "title": "Préparer une page d’erreur compréhensible",
+        "body": "Django utilise le template 404.html lorsqu’il gère cette erreur avec DEBUG=False. Place-le dans le dossier global templates déjà déclaré. Pour tester localement ce comportement, configure aussi ALLOWED_HOSTS avec les noms d’hôtes utilisés, sans protocole ni port, par exemple localhost et 127.0.0.1. En développement habituel, DEBUG=True fournit des détails utiles ; sur un site exposé, les pages de débogage ne doivent pas être affichées aux visiteurs.",
+        "code": "{% extends \"base.html\" %}\n{% block title %}Page introuvable · Musculor{% endblock %}\n{% block content %}\n  <h1>Cette page n’existe pas.</h1>\n  <p>Le lien a peut-être changé.</p>\n  <a href=\"{% url 'centres:accueil' %}\">Revenir aux centres</a>\n{% endblock %}",
+        "language": "html",
+        "filename": "templates/404.html",
+        "callout": "Une ressource introuvable doit conserver le statut HTTP 404, même si la page d’erreur est élégante."
+      }
+    ],
+    "takeaway": "Un lien invite à naviguer, redirect demande une nouvelle requête et une 404 indique une ressource absente.",
+    "exercise": {
+      "prompt": "Complète le raccourci qui renvoie vers le catalogue après une action réussie.",
+      "code": "return ___(\"centres:accueil\")",
+      "answers": [
+        "redirect"
+      ],
+      "hint": "La fonction porte le nom anglais d’une redirection.",
+      "explanation": "redirect construit une réponse de redirection vers la route nommée, que le navigateur demandera ensuite."
+    },
+    "quiz": [
+      {
+        "question": "Un centre portant l’identifiant demandé n’existe pas. Quel raccourci convient ?",
+        "options": [
+          "print_or_stop",
+          "get_object_or_404",
+          "redirect_all_errors",
+          "render_database"
+        ],
+        "correct": 1,
+        "hint": "Il récupère un objet, ou signale son absence.",
+        "explanation": "get_object_or_404 intercepte l’absence de l’objet et l’exprime avec une réponse 404."
+      },
+      {
+        "question": "Quelle différence entre render et redirect ?",
+        "options": [
+          "Aucune.",
+          "render efface la page ; redirect la sauvegarde.",
+          "render produit une réponse avec un template ; redirect demande une autre URL au navigateur.",
+          "redirect ne fonctionne que pour les administrateurs."
+        ],
+        "correct": 2,
+        "hint": "Dans un cas, une nouvelle requête vers la destination est nécessaire.",
+        "explanation": "render génère directement du contenu. Une redirection indique une destination que le client doit ensuite demander."
+      },
+      {
+        "question": "Pourquoi ta page 404.html n’apparaît-elle pas à la place des détails techniques en développement ?",
+        "options": [
+          "Parce que DEBUG=True affiche la page de diagnostic.",
+          "Parce que les noms de fichiers ne peuvent pas contenir de chiffres.",
+          "Parce que toutes les 404 doivent devenir des redirections.",
+          "Parce que seuls les fichiers CSS peuvent traiter une erreur."
+        ],
+        "correct": 0,
+        "hint": "Regarde la configuration d’affichage des erreurs.",
+        "explanation": "La page de débogage est utilisée avec DEBUG=True. Le template 404.html s’applique au traitement normal des erreurs avec DEBUG=False."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quel est le statut d’une redirection temporaire habituelle avec redirect ?",
+        "back": "302 par défaut."
+      },
+      {
+        "front": "Que signifie une réponse 404 ?",
+        "back": "La ressource demandée n’a pas été trouvée à cette adresse."
+      }
+    ]
+  },
+  {
+    "id": "d1",
+    "moduleId": "donnees",
+    "order": 9,
+    "title": "Définir un modèle et enregistrer des données",
+    "shortTitle": "Modèles et migrations",
+    "duration": 20,
+    "pages": "40–43",
+    "intro": "Les listes écrites dans une vue disparaissent dès que tu modifies le code. Un modèle et une base de données rendent les centres persistants. Tu vas décrire Centre, créer sa table et enregistrer un premier objet avec l’ORM.",
+    "objectives": [
+      "Définir des champs cohérents dans un modèle Django.",
+      "Distinguer modification du modèle, création de migration et application en base.",
+      "Enregistrer un objet et comprendre ce qui est réellement validé."
+    ],
+    "sections": [
+      {
+        "title": "Décrire un centre avec une classe Python",
+        "body": "Un modèle concret simple représente généralement une table, et ses champs représentent les colonnes. En héritant de models.Model, Centre reçoit les mécanismes de l’ORM. CharField convient à un texte court de longueur limitée ; TextField convient à une description. Si tu ne définis pas de clé primaire, Django en ajoute une. La méthode __str__ donne un libellé lisible dans le shell et l’administration, sans créer de colonne supplémentaire.",
+        "code": "from django.db import models\n\nclass Centre(models.Model):\n    nom = models.CharField(max_length=120)\n    pays = models.CharField(max_length=80)\n    description = models.TextField(blank=True)\n\n    def __str__(self):\n        return self.nom",
+        "language": "python",
+        "filename": "centres/models.py"
+      },
+      {
+        "title": "Distinguer NULL, vide et validation",
+        "body": "null concerne le stockage d’une absence de valeur dans la base ; blank concerne l’acceptation d’une valeur vide lors de la validation. Un texte vide n’est donc pas la même chose qu’un NULL SQL. Ici, description peut être vide dans un formulaire grâce à blank=True, tout en gardant une chaîne de caractères en base. Autre point essentiel : save() ne lance pas automatiquement full_clean(). Les ModelForm utilisés plus tard valident les données avant de les enregistrer ; dans le shell, tu peux appeler full_clean() explicitement.",
+        "bullets": [
+          "null=False ne garantit pas à lui seul qu’un texte soit non vide.",
+          "Les limites et validateurs doivent être contrôlés par la validation adaptée.",
+          "Les contraintes de base complètent la validation applicative ; elles ne la remplacent pas entièrement."
+        ]
+      },
+      {
+        "title": "Faire évoluer le schéma de la base",
+        "body": "Modifier models.py ne modifie pas immédiatement la table. makemigrations compare l’état des modèles à l’historique des migrations et écrit un fichier décrivant les changements. migrate applique ces instructions à la base configurée. Lis le résultat pour vérifier que Django crée bien Centre. Les fichiers de migration font partie du code du projet : conserve-les dans le suivi de version. Le modèle accounts.User a déjà été initialisé avant la première migration, dans la leçon de création du projet.",
+        "code": "python manage.py makemigrations centres\npython manage.py migrate\npython manage.py showmigrations centres",
+        "language": "bash",
+        "filename": "Terminal — à côté de manage.py"
+      },
+      {
+        "title": "Créer puis sauvegarder une instance",
+        "body": "Lance python manage.py shell pour travailler avec la configuration Django chargée. Construire une instance avec Centre(...) prépare un objet en mémoire. full_clean() vérifie ses valeurs ; save() enregistre la ligne. L’identifiant devient disponible après l’enregistrement. La méthode Centre.objects.create(...) combine construction et sauvegarde, mais n’appelle pas non plus full_clean() automatiquement. Pour vérifier ce qui a été persisté, relis l’objet depuis le gestionnaire objects plutôt que seulement regarder la variable en mémoire.",
+        "code": "from centres.models import Centre\n\ncentre = Centre(\n    nom=\"Musculor Paris\",\n    pays=\"France\",\n    description=\"Un espace pour progresser ensemble.\",\n)\ncentre.full_clean()\ncentre.save()\n\nprint(centre.pk)\nprint(Centre.objects.get(pk=centre.pk).nom)",
+        "language": "python",
+        "filename": "Shell Django"
+      }
+    ],
+    "takeaway": "Le modèle décrit, makemigrations prépare, migrate applique ; une instance n’est persistée qu’après son enregistrement.",
+    "exercise": {
+      "prompt": "Quelle commande génère les fichiers décrivant les changements de modèles ?",
+      "code": "python manage.py ___ centres",
+      "answers": [
+        "makemigrations"
+      ],
+      "hint": "Elle prépare les migrations sans les appliquer.",
+      "explanation": "makemigrations crée les fichiers de migration. La commande migrate applique ensuite leur contenu à la base."
+    },
+    "quiz": [
+      {
+        "question": "Tu ajoutes un champ à Centre. Quelle séquence applique ce changement à la base ?",
+        "options": [
+          "runserver puis createsuperuser.",
+          "makemigrations puis migrate.",
+          "migrate puis startapp.",
+          "print puis render."
+        ],
+        "correct": 1,
+        "hint": "Il faut d’abord décrire le changement, puis l’exécuter.",
+        "explanation": "makemigrations écrit la migration et migrate l’applique. Éditer le modèle seul ne suffit pas."
+      },
+      {
+        "question": "Que signifie blank=True sur description ?",
+        "options": [
+          "La base n’existe pas encore.",
+          "Toutes les valeurs seront remplacées par NULL.",
+          "La validation peut accepter une valeur vide pour ce champ.",
+          "Le champ ne peut pas apparaître dans un formulaire."
+        ],
+        "correct": 2,
+        "hint": "blank concerne la validation, pas directement le stockage SQL.",
+        "explanation": "blank=True permet un champ vide dans la validation des formulaires/modèles. null porte une autre responsabilité : le stockage de NULL en base."
+      },
+      {
+        "question": "save() valide-t-il automatiquement tous les champs avec full_clean() ?",
+        "options": [
+          "Oui, systématiquement.",
+          "Non ; il faut utiliser la validation adaptée, par exemple un ModelForm ou full_clean().",
+          "Oui, mais seulement avec SQLite.",
+          "Non, car Django ne propose aucun validateur."
+        ],
+        "correct": 1,
+        "hint": "Persister et valider sont deux opérations distinctes.",
+        "explanation": "Model.save() ne déclenche pas automatiquement full_clean(). Un formulaire Django valide normalement les données avant leur sauvegarde."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle différence entre makemigrations et migrate ?",
+        "back": "makemigrations écrit les changements de schéma ; migrate les applique à la base."
+      },
+      {
+        "front": "Que représente une instance Centre ?",
+        "back": "Un objet Python correspondant à un centre ; après sauvegarde, il est associé à une ligne de la base."
+      }
+    ]
+  },
+  {
+    "id": "d2",
+    "moduleId": "donnees",
+    "order": 10,
+    "title": "Sélectionner et trier avec les QuerySet",
+    "shortTitle": "Interroger les données",
+    "duration": 20,
+    "pages": "43–46",
+    "intro": "Un QuerySet décrit une sélection d’objets. Il peut être filtré, trié et affiné avant que Django ne demande les résultats à la base. Pour un profil data, les parallèles avec SELECT, WHERE et ORDER BY rendent cette API très naturelle.",
+    "objectives": [
+      "Choisir entre all, filter, get et first.",
+      "Combiner des conditions et contrôler l’ordre des résultats.",
+      "Distinguer un QuerySet d’un objet unique et comprendre son évaluation."
+    ],
+    "sections": [
+      {
+        "title": "Construire une requête progressivement",
+        "body": "Le gestionnaire Centre.objects constitue le point d’entrée de l’ORM. all() produit un QuerySet représentant les centres. filter() renvoie une sélection plus précise, et order_by() fixe leur ordre. Tu peux enchaîner ces méthodes. Les QuerySet sont généralement paresseux : construire la sélection n’exécute pas immédiatement sa requête. L’itération, la conversion en liste ou certaines autres opérations déclenchent l’évaluation. Ce comportement permet de préparer une requête avant d’en demander les lignes.",
+        "code": "from centres.models import Centre\n\ncentres = Centre.objects.filter(pays=\"France\").order_by(\"nom\")\n\nfor centre in centres:\n    print(centre.nom)",
+        "language": "python",
+        "filename": "Shell Django"
+      },
+      {
+        "title": "Une collection ou un objet unique ?",
+        "body": "filter() renvoie toujours un QuerySet, même si aucune ligne ne correspond. get() attend exactement un objet : il lève DoesNotExist s’il n’en trouve aucun et MultipleObjectsReturned s’il en trouve plusieurs. Une clé primaire est donc un bon critère pour get(). first() renvoie le premier objet de la sélection, ou None si elle est vide. Fixe un ordre lorsque « premier » a un sens métier précis ; ne suppose pas que l’ordre de stockage constitue une règle stable.",
+        "code": "centres_francais = Centre.objects.filter(pays=\"France\")\n\npremier = Centre.objects.order_by(\"nom\", \"pk\").first()\nif premier is not None:\n    print(premier.nom)\n\ntry:\n    centre = Centre.objects.get(pk=1)\nexcept Centre.DoesNotExist:\n    print(\"Ce centre n’existe pas.\")",
+        "language": "python",
+        "filename": "Shell Django"
+      },
+      {
+        "title": "Combiner des conditions",
+        "body": "Plusieurs arguments dans filter correspondent à un ET logique. Le double soulignement introduit un opérateur de recherche : icontains cherche un fragment sans distinction de casse, et in accepte une collection de valeurs. Pour exprimer un OU, utilise Q avec l’opérateur | ; & représente un ET et ~ une négation. Parenthèse les expressions composées pour rendre leur priorité évidente. Les noms de champs doivent correspondre exactement au modèle.",
+        "code": "from django.db.models import Q\n\nCentre.objects.filter(pays=\"France\", nom__icontains=\"Musculor\")\n\nCentre.objects.filter(pays__in=[\"France\", \"Algérie\"])\n\nCentre.objects.filter(\n    Q(pays=\"France\") | Q(pays=\"Algérie\")\n)",
+        "language": "python",
+        "filename": "Shell Django"
+      },
+      {
+        "title": "Choisir les colonnes, compter et ordonner",
+        "body": "values() produit des dictionnaires avec les champs demandés ; values_list(..., flat=True) fournit une suite de valeurs pour un seul champ. Ces résultats restent des QuerySet, mais leurs éléments ne sont plus des instances Centre complètes. count() demande le nombre de lignes ; exists() vérifie simplement leur présence. Le préfixe - dans order_by indique un tri décroissant. Pour une sélection reproductible, ajoute une seconde clé de tri lorsque plusieurs objets peuvent partager la même valeur.",
+        "code": "Centre.objects.order_by(\"pays\", \"nom\", \"pk\").values(\"nom\", \"pays\")\nCentre.objects.order_by(\"-nom\").values_list(\"nom\", flat=True)\nCentre.objects.filter(pays=\"France\").count()\nCentre.objects.filter(pays=\"Algérie\").exists()",
+        "language": "python",
+        "filename": "Shell Django",
+        "callout": "QuerySet n’est pas synonyme de « toute opération ORM » : get() et create() retournent notamment un objet, count() un entier."
+      }
+    ],
+    "takeaway": "filter sélectionne une collection, get attend un objet unique et order_by rend l’ordre explicite ; les QuerySet se composent avant leur évaluation.",
+    "exercise": {
+      "prompt": "Complète la méthode qui sélectionne tous les centres situés en France.",
+      "code": "Centre.objects.___(pays=\"France\")",
+      "answers": [
+        "filter"
+      ],
+      "hint": "Cette méthode renvoie une collection, même vide.",
+      "explanation": "filter renvoie un QuerySet des objets correspondants. get attendrait un seul objet et pourrait lever une exception."
+    },
+    "quiz": [
+      {
+        "question": "Quel est le résultat de Centre.objects.filter(pays='Italie') si aucun centre ne correspond ?",
+        "options": [
+          "Une erreur DoesNotExist.",
+          "Un QuerySet vide.",
+          "Toujours None.",
+          "Un centre créé automatiquement."
+        ],
+        "correct": 1,
+        "hint": "filter retourne une collection.",
+        "explanation": "Une sélection vide est un résultat normal pour filter. C’est get qui lève DoesNotExist lorsqu’il ne trouve aucun objet."
+      },
+      {
+        "question": "Comment trier les centres par nom en ordre décroissant ?",
+        "options": [
+          "order_by('nom DESC')",
+          "order_by('-nom')",
+          "filter(nom='desc')",
+          "reverse_name()"
+        ],
+        "correct": 1,
+        "hint": "Django utilise un préfixe spécial devant le champ.",
+        "explanation": "Le signe - devant le nom de champ indique le tri décroissant."
+      },
+      {
+        "question": "Centre.objects.get(pays='France') trouve trois lignes. Que se passe-t-il ?",
+        "options": [
+          "Django renvoie automatiquement la première.",
+          "Django renvoie une liste de trois centres.",
+          "Django lève MultipleObjectsReturned.",
+          "Django supprime les doublons."
+        ],
+        "correct": 2,
+        "hint": "get exige exactement un résultat.",
+        "explanation": "Un pays n’est généralement pas unique. Utilise filter pour plusieurs centres ou un critère unique comme pk pour get."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle différence entre filter() et get() ?",
+        "back": "filter renvoie un QuerySet, éventuellement vide ; get renvoie exactement un objet ou lève une exception."
+      },
+      {
+        "front": "Que signifie nom__icontains='mus' ?",
+        "back": "Rechercher les noms contenant « mus », sans distinction de casse selon les capacités de la base."
+      }
+    ]
+  },
+  {
+    "id": "d3",
+    "moduleId": "donnees",
+    "order": 11,
+    "title": "Administrer les centres avec Django Admin",
+    "shortTitle": "Prendre en main l’admin",
+    "duration": 16,
+    "pages": "46–53",
+    "intro": "L’administration offre rapidement une interface interne pour gérer les données. Tu peux y créer des centres, les rechercher et les modifier avant même de construire l’interface destinée aux visiteurs de Musculor.",
+    "objectives": [
+      "Créer un compte d’administration et ouvrir l’interface.",
+      "Enregistrer Centre et personnaliser sa liste.",
+      "Distinguer accès au staff, superutilisateur et permissions métier."
+    ],
+    "sections": [
+      {
+        "title": "Créer un accès d’administration",
+        "body": "Après les migrations, createsuperuser te demande les informations d’un compte disposant de tous les droits. Choisis ton propre mot de passe et laisse la commande le saisir de manière interactive. Le compte utilise accounts.User, configuré au démarrage du projet. Lance ensuite le serveur et ouvre /admin/. La route existe déjà dans musculor/urls.py. Une connexion réussie prouve que l’authentification fonctionne ; elle ne signifie pas encore que Centre a été déclaré dans l’interface.",
+        "code": "python manage.py createsuperuser\npython manage.py runserver",
+        "language": "bash",
+        "filename": "Terminal",
+        "bullets": [
+          "Adresse locale habituelle : http://127.0.0.1:8000/admin/",
+          "Le mot de passe n’a pas à être écrit dans le code.",
+          "La création du compte n’ajoute pas automatiquement tous les modèles à l’admin."
+        ]
+      },
+      {
+        "title": "Enregistrer le modèle et rendre la liste lisible",
+        "body": "Le décorateur admin.register associe Centre à sa configuration d’administration. list_display choisit les colonnes du tableau ; search_fields ajoute la recherche ; list_filter propose une sélection par pays. Ces options utilisent des champs ou attributs valides du modèle. Le nom rendu par __str__ reste utile dans les formulaires et les relations. Si tu avais déjà utilisé admin.site.register(Centre), remplace cet enregistrement pour éviter de déclarer deux fois le même modèle.",
+        "code": "from django.contrib import admin\nfrom .models import Centre\n\n@admin.register(Centre)\nclass CentreAdmin(admin.ModelAdmin):\n    list_display = (\"id\", \"nom\", \"pays\")\n    search_fields = (\"nom\", \"pays\")\n    list_filter = (\"pays\",)\n    ordering = (\"nom\",)",
+        "language": "python",
+        "filename": "centres/admin.py"
+      },
+      {
+        "title": "Réaliser le CRUD dans l’interface",
+        "body": "Ajoute un centre de démonstration, puis vérifie sa présence dans la liste. Ouvre sa fiche, corrige la description et enregistre. Utilise ensuite le filtre de pays et le champ de recherche pour retrouver l’objet. La suppression possède une étape de confirmation ; lis-la, notamment lorsque des relations existent. Ce parcours montre que l’administration réutilise les modèles et leur validation. Elle constitue un excellent outil pour préparer des données d’essai et vérifier rapidement leur cohérence.",
+        "bullets": [
+          "Create : ajouter une fiche Centre.",
+          "Read : parcourir, rechercher et ouvrir une fiche.",
+          "Update : modifier ses champs puis enregistrer.",
+          "Delete : vérifier la confirmation avant la suppression."
+        ]
+      },
+      {
+        "title": "Accorder les droits nécessaires, sans tout confondre",
+        "body": "Un utilisateur actif marqué is_staff peut accéder à l’administration, mais il a encore besoin des permissions associées aux modèles. Un superutilisateur actif dispose de tous les droits. Un compte ordinaire n’obtient pas l’accès simplement parce qu’il est connecté. L’administration vise la gestion interne ; nous construirons ensuite des pages métier plus adaptées au parcours d’un utilisateur. Pour gérer accounts.User dans l’admin, son propre fichier admin.py devra l’enregistrer avec UserAdmin ; cette étape sera détaillée dans la partie authentification.",
+        "callout": "is_staff donne l’éligibilité à l’admin ; les permissions déterminent les opérations disponibles. is_superuser accorde tous les droits avec le comportement standard."
+      }
+    ],
+    "takeaway": "L’admin exploite les modèles pour gérer les données ; son interface et ses permissions se configurent explicitement.",
+    "exercise": {
+      "prompt": "Quelle option de ModelAdmin choisit les colonnes visibles dans la liste des centres ?",
+      "code": "class CentreAdmin(admin.ModelAdmin):\n    ___ = (\"id\", \"nom\", \"pays\")",
+      "answers": [
+        "list_display"
+      ],
+      "hint": "Son nom combine « liste » et « affichage ».",
+      "explanation": "list_display indique les champs ou attributs à montrer dans le tableau des objets."
+    },
+    "quiz": [
+      {
+        "question": "Centre n’apparaît pas dans l’administration après sa création. Que faut-il généralement faire ?",
+        "options": [
+          "Le déclarer dans centres/admin.py.",
+          "Le renommer User.",
+          "Copier ses données dans un template.",
+          "Supprimer la base."
+        ],
+        "correct": 0,
+        "hint": "Un modèle doit être enregistré auprès du site d’administration.",
+        "explanation": "admin.register ou admin.site.register rend un modèle disponible dans l’admin, sous réserve des droits de l’utilisateur."
+      },
+      {
+        "question": "Que fournit list_filter = ('pays',) ?",
+        "options": [
+          "Une suppression de tous les pays vides.",
+          "Un filtre de liste par pays.",
+          "Une règle de mot de passe.",
+          "Une nouvelle colonne dans la base."
+        ],
+        "correct": 1,
+        "hint": "Il s’agit d’une option d’interface, pas d’une migration.",
+        "explanation": "list_filter ajoute un contrôle permettant de réduire les résultats affichés selon le champ pays."
+      },
+      {
+        "question": "Un compte actif is_staff=True possède-t-il automatiquement tous les droits sur Centre ?",
+        "options": [
+          "Oui, autant qu’un superutilisateur.",
+          "Oui, mais seulement pour supprimer.",
+          "Non, il lui faut les permissions pertinentes.",
+          "Non, car aucun membre du staff ne peut accéder à l’admin."
+        ],
+        "correct": 2,
+        "hint": "Accéder à l’interface et agir sur les objets sont deux niveaux distincts.",
+        "explanation": "is_staff autorise l’accès à l’admin. Les permissions de modèle déterminent ensuite les actions accessibles, sauf pour le superutilisateur."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle commande crée un superutilisateur ?",
+        "back": "python manage.py createsuperuser"
+      },
+      {
+        "front": "À quoi servent search_fields et list_filter ?",
+        "back": "search_fields ajoute une recherche ; list_filter propose des filtres dans la liste d’administration."
+      }
+    ]
+  },
+  {
+    "id": "d4",
+    "moduleId": "donnees",
+    "order": 12,
+    "title": "Relier les modèles : un-à-plusieurs et plusieurs-à-plusieurs",
+    "shortTitle": "Construire les relations",
+    "duration": 20,
+    "pages": "53–55",
+    "intro": "Une salle peut accueillir plusieurs séances ; une activité peut être proposée dans plusieurs salles. Les relations expriment ces règles sans recopier des noms partout. Les modèles de cette leçon sont des extensions pédagogiques ; le fil rouge CRUD continue avec Centre.",
+    "objectives": [
+      "Placer une ForeignKey du côté plusieurs d’une relation.",
+      "Reconnaître un besoin de ManyToManyField ou de OneToOneField.",
+      "Anticiper les effets d’une suppression et appliquer les migrations."
+    ],
+    "sections": [
+      {
+        "title": "Une clé étrangère se trouve du côté plusieurs",
+        "body": "Si un centre propose plusieurs séances et qu’une séance appartient à un seul centre, Seance porte la ForeignKey vers Centre. Chaque séance enregistre ainsi l’identifiant de son centre. Le paramètre related_name donne un nom à l’accès inverse : un centre peut retrouver ses séances avec centre.seances.all(). La relation repose sur les identifiants, pas sur le nom du centre, qui peut changer ou être partagé par plusieurs établissements.",
+        "code": "from django.db import models\n\n# À ajouter après le modèle Centre existant\nclass Seance(models.Model):\n    titre = models.CharField(max_length=120)\n    centre = models.ForeignKey(\n        Centre,\n        on_delete=models.PROTECT,\n        related_name=\"seances\",\n    )",
+        "language": "python",
+        "filename": "centres/models.py — extension facultative"
+      },
+      {
+        "title": "Choisir le comportement à la suppression",
+        "body": "on_delete décrit le traitement des objets qui référencent un objet supprimé. Dans l’exemple, PROTECT empêche de supprimer un centre encore utilisé par une séance. CASCADE supprimerait également les séances liées ; SET_NULL conserverait les séances en retirant leur lien, avec un champ autorisant NULL. Choisis selon la règle métier, pas selon la solution qui fait disparaître une erreur. Une suppression apparemment simple peut donc toucher plusieurs tables ou être refusée pour préserver leur cohérence.",
+        "bullets": [
+          "PROTECT : refuser la suppression tant qu’un objet dépendant subsiste.",
+          "CASCADE : supprimer également les objets dépendants concernés.",
+          "SET_NULL : retirer le lien, avec null=True sur le champ."
+        ]
+      },
+      {
+        "title": "Partager plusieurs activités entre plusieurs centres",
+        "body": "Une activité peut exister dans plusieurs centres, et un centre peut proposer plusieurs activités : c’est une relation plusieurs-à-plusieurs. Django utilise une table intermédiaire pour représenter les associations. ManyToManyField permet de la gérer sans créer manuellement cette table simple. Les objets doivent être enregistrés avant d’ajouter leurs liens avec add(). Si l’association possède ses propres données, comme un prix particulier par centre, un modèle intermédiaire explicite devient pertinent.",
+        "code": "class Activite(models.Model):\n    nom = models.CharField(max_length=80)\n    centres = models.ManyToManyField(\n        Centre, related_name=\"activites\", blank=True\n    )\n\n# Dans le shell, après migration et avec un centre enregistré :\n# activite = Activite.objects.create(nom=\"Yoga\")\n# activite.centres.add(centre)\n# centre.activites.all()",
+        "language": "python",
+        "filename": "centres/models.py — extension facultative"
+      },
+      {
+        "title": "Reconnaître une relation un-à-un",
+        "body": "Une relation un-à-un ne signifie pas que les tables sont indépendantes. Elle impose qu’un objet ne soit lié qu’à un seul objet de l’autre côté. Par exemple, un profil complémentaire peut être associé à un seul utilisateur avec OneToOneField. Lorsque le lien vise un utilisateur dans un modèle, settings.AUTH_USER_MODEL respecte le choix accounts.User du projet. Après ajout de relations, génère puis applique les migrations ; une déclaration Python seule ne crée pas les contraintes en base.",
+        "code": "from django.conf import settings\n\nclass Profil(models.Model):\n    utilisateur = models.OneToOneField(\n        settings.AUTH_USER_MODEL,\n        on_delete=models.CASCADE,\n        related_name=\"profil\",\n    )\n    objectif = models.CharField(max_length=160, blank=True)",
+        "language": "python",
+        "filename": "Exemple de modèle Profil"
+      }
+    ],
+    "takeaway": "ForeignKey va du côté plusieurs vers le côté un ; ManyToManyField gère les associations multiples ; OneToOneField impose l’unicité du lien.",
+    "exercise": {
+      "prompt": "Complète le type de champ qui lie chaque séance à son unique centre.",
+      "code": "centre = models.___(Centre, on_delete=models.PROTECT)",
+      "answers": [
+        "ForeignKey"
+      ],
+      "hint": "C’est la représentation Django d’une clé étrangère.",
+      "explanation": "La clé étrangère est portée par Seance, le côté plusieurs, et pointe vers Centre, le côté un."
+    },
+    "quiz": [
+      {
+        "question": "Un centre possède plusieurs séances ; chaque séance appartient à un centre. Où placer la ForeignKey ?",
+        "options": [
+          "Dans Centre vers Seance.",
+          "Dans Seance vers Centre.",
+          "Dans le fichier CSS.",
+          "Dans les deux modèles obligatoirement."
+        ],
+        "correct": 1,
+        "hint": "Le côté plusieurs doit identifier son parent.",
+        "explanation": "Chaque séance stocke la référence de son centre. Il n’est pas nécessaire de dupliquer une seconde clé dans Centre."
+      },
+      {
+        "question": "Quel champ convient si chaque centre propose plusieurs activités et chaque activité existe dans plusieurs centres ?",
+        "options": [
+          "BooleanField.",
+          "OneToOneField.",
+          "ManyToManyField.",
+          "Un texte contenant tous les identifiants séparés par des virgules."
+        ],
+        "correct": 2,
+        "hint": "Les deux côtés acceptent plusieurs associations.",
+        "explanation": "ManyToManyField représente cette relation via une table d’association. Une liste d’identifiants dans un texte compliquerait l’intégrité et les requêtes."
+      },
+      {
+        "question": "Avec on_delete=models.PROTECT, que se passe-t-il si tu supprimes un centre référencé par une séance ?",
+        "options": [
+          "La suppression est empêchée.",
+          "La séance est toujours supprimée automatiquement.",
+          "Le nom du centre devient vide.",
+          "La ForeignKey disparaît du modèle."
+        ],
+        "correct": 0,
+        "hint": "Le nom du comportement décrit son objectif.",
+        "explanation": "PROTECT protège l’objet référencé tant qu’il est utilisé. Il faut traiter les liens selon une règle métier avant de pouvoir le supprimer."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "De quel côté se trouve une ForeignKey dans une relation 1→N ?",
+        "back": "Du côté N, vers l’objet du côté 1."
+      },
+      {
+        "front": "Une relation 1→1 signifie-t-elle que les tables sont indépendantes ?",
+        "back": "Non. OneToOneField établit un lien unique entre leurs objets."
+      }
+    ]
+  },
+  {
+    "id": "d5",
+    "moduleId": "donnees",
+    "order": 13,
+    "title": "Diagnostiquer et corriger une migration",
+    "shortTitle": "Faire évoluer sans perdre",
+    "duration": 18,
+    "pages": "55–58",
+    "intro": "Une migration est un changement versionné du schéma, pas un bouton magique de réparation. Avant de corriger une erreur, identifie ce qui a été généré, ce qui a été appliqué et les données qui risquent d’être affectées.",
+    "objectives": [
+      "Lire l’état des migrations et les opérations prévues.",
+      "Choisir une correction qui préserve l’historique utile.",
+      "Anticiper les conséquences d’un champ obligatoire ou d’un retour arrière."
+    ],
+    "sections": [
+      {
+        "title": "Observer avant de modifier",
+        "body": "Commence par lire l’erreur complète et le nom de la migration concernée. showmigrations indique quelles migrations sont appliquées ; migrate --plan montre les opérations prévues. sqlmigrate présente le SQL correspondant à une migration précise. Le numéro seul ne suffit pas : Django suit également les dépendances entre fichiers. Ces commandes aident à distinguer un changement Python non migré, une migration encore en attente et un schéma déjà modifié.",
+        "code": "python manage.py showmigrations centres\npython manage.py migrate --plan\n\n# Remplacer 0001 par le préfixe exact de la migration à examiner\npython manage.py sqlmigrate centres 0001",
+        "language": "bash",
+        "filename": "Terminal — diagnostic"
+      },
+      {
+        "title": "Corriger un changement déjà partagé",
+        "body": "Si une migration a déjà été appliquée ou partagée, évite de réécrire arbitrairement son passé. Corrige plutôt le modèle puis crée une nouvelle migration qui amène le schéma vers l’état voulu. Par exemple, si un champ est mal nommé, examine l’opération générée : un renommage préserve les valeurs, alors qu’une suppression suivie d’un ajout peut les perdre. Relis le fichier de migration et teste sur une copie représentative avant de l’appliquer à des données importantes.",
+        "code": "# Après correction réfléchie du modèle\npython manage.py makemigrations centres --name corrige_schema_centres\npython manage.py migrate --plan\n\n# Après revue des opérations et sauvegarde appropriée\npython manage.py migrate",
+        "language": "bash",
+        "filename": "Terminal — correction progressive",
+        "callout": "Supprimer db.sqlite3 ou tous les dossiers migrations n’est pas une méthode générale de réparation : cela peut détruire des données et casser l’historique partagé."
+      },
+      {
+        "title": "Ajouter un champ obligatoire à des lignes existantes",
+        "body": "Imagine que des centres existent déjà et que tu ajoutes un nouveau champ obligatoire. La base a besoin d’une valeur pour ces anciennes lignes. Choisir une valeur arbitraire simplement pour passer la migration crée un problème de qualité. Selon le besoin, définis une valeur par défaut réellement valable, ou effectue plusieurs étapes : autoriser temporairement l’absence, renseigner les lignes existantes par une migration de données, puis imposer la contrainte. Les changements de schéma doivent respecter la réalité des données.",
+        "bullets": [
+          "Identifier les lignes concernées avant de choisir une valeur.",
+          "Différencier une valeur inconnue d’une vraie valeur par défaut.",
+          "Vérifier les contraintes après la transformation des données."
+        ]
+      },
+      {
+        "title": "Comprendre un retour arrière",
+        "body": "migrate peut cibler un état antérieur, mais revenir en arrière peut supprimer une colonne ou une table et ses données. Certaines opérations sont irréversibles. Examine toujours le plan et les dépendances avant de l’envisager. Pour un travail en équipe, conserve ensemble modèle et migration dans le suivi de version. Après une correction, vérifie l’état des migrations et quelques comportements métier ; un serveur qui démarre ne prouve pas à lui seul que toutes les données sont correctes.",
+        "code": "# Diagnostic final\npython manage.py showmigrations centres\npython manage.py check\n\n# Examiner un retour vers une migration existante, sans l’appliquer\n# python manage.py migrate centres 0001 --plan",
+        "language": "bash",
+        "filename": "Terminal",
+        "bullets": [
+          "L’historique des migrations décrit la structure attendue.",
+          "La table django_migrations suit les migrations appliquées.",
+          "Une correction doit garder code, historique et base cohérents."
+        ]
+      }
+    ],
+    "takeaway": "Observe l’état, lis le changement et préserve les données : la correction se fait généralement par une migration explicite supplémentaire.",
+    "exercise": {
+      "prompt": "Complète la commande qui liste les migrations et indique lesquelles ont été appliquées.",
+      "code": "python manage.py ___ centres",
+      "answers": [
+        "showmigrations"
+      ],
+      "hint": "Elle « montre » les migrations.",
+      "explanation": "showmigrations affiche leur état. Les migrations appliquées portent une marque [X]."
+    },
+    "quiz": [
+      {
+        "question": "Que faut-il faire en premier lorsqu’une migration échoue ?",
+        "options": [
+          "Supprimer immédiatement la base.",
+          "Lire l’erreur et examiner l’état des migrations.",
+          "Changer DEBUG au hasard.",
+          "Supprimer tous les champs du modèle."
+        ],
+        "correct": 1,
+        "hint": "Tu dois connaître la situation avant de choisir la correction.",
+        "explanation": "Le message, showmigrations et le plan permettent de comprendre l’écart entre le code, l’historique et la base."
+      },
+      {
+        "question": "Une migration déjà appliquée a ajouté un champ inutile. Quelle approche est généralement appropriée ?",
+        "options": [
+          "Modifier les anciens fichiers sans vérifier les autres environnements.",
+          "Supprimer toute l’application.",
+          "Corriger le modèle et créer une migration explicite, après examen de l’effet sur les données.",
+          "Désactiver définitivement toutes les migrations."
+        ],
+        "correct": 2,
+        "hint": "Les autres environnements doivent pouvoir suivre la même évolution.",
+        "explanation": "Une nouvelle migration préserve un historique cohérent. Supprimer le champ peut toutefois supprimer ses données : il faut l’évaluer."
+      },
+      {
+        "question": "Revenir à une migration précédente est-il toujours sans perte ?",
+        "options": [
+          "Oui, Django sauvegarde automatiquement toutes les données.",
+          "Oui, si la commande est courte.",
+          "Non, l’opération peut détruire des données ou être irréversible.",
+          "Non, car Django ne permet jamais de retour arrière."
+        ],
+        "correct": 2,
+        "hint": "Réfléchis au retour arrière d’une création de table.",
+        "explanation": "Certaines opérations inverses suppriment des structures et leurs données. Il faut examiner les opérations et disposer d’une stratégie de sauvegarde adaptée."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle commande affiche les opérations prévues sans les appliquer ?",
+        "back": "python manage.py migrate --plan"
+      },
+      {
+        "front": "Pourquoi conserver les migrations avec le code ?",
+        "back": "Elles permettent aux autres environnements d’appliquer les mêmes changements de schéma dans le bon ordre."
+      }
+    ]
+  },
+  {
+    "id": "c1",
+    "moduleId": "crud",
+    "order": 14,
+    "title": "Afficher la fiche d’un centre",
+    "shortTitle": "La page détail",
+    "duration": 14,
+    "pages": "59–64",
+    "intro": "Musculor possède plusieurs salles. Une liste permet de les parcourir, mais chaque salle mérite sa propre page. Tu vas relier une URL contenant un identifiant à un objet Centre, puis afficher ses informations dans un template.",
+    "objectives": [
+      "Relier une URL à la clé primaire d’un centre",
+      "Passer un objet au contexte d’un template",
+      "Renvoyer une vraie réponse 404 si le centre n’existe pas"
+    ],
+    "sections": [
+      {
+        "title": "De la collection à un objet précis",
+        "body": "La page d’accueil présente une collection : Centre.objects.all() retourne un QuerySet que le template parcourt avec une boucle. Une fiche détail attend au contraire un seul centre. Son identifiant doit donc voyager du lien vers l’URL, puis de l’URL vers la vue. Utilise la clé primaire, accessible avec pk : deux salles peuvent porter le même nom, tandis que leur clé primaire les distingue. Le nom du paramètre dans la route doit correspondre au paramètre reçu par la fonction.",
+        "code": "from django.urls import path\nfrom . import views\n\napp_name = \"centres\"\nurlpatterns = [\n    path(\"\", views.accueil, name=\"accueil\"),\n    path(\"<int:pk>/\", views.detail, name=\"detail\"),\n]",
+        "language": "python",
+        "filename": "centres/urls.py"
+      },
+      {
+        "title": "Charger le centre ou répondre 404",
+        "body": "Le convertisseur int transforme la portion de l’URL en entier, mais il ne vérifie pas l’existence du centre. La vue effectue cette seconde vérification. get_object_or_404 cherche l’objet avec les critères fournis et lève Http404 si aucun résultat n’existe. Cela évite qu’une fiche supprimée provoque une erreur serveur. La variable Python centre devient ensuite une variable de template parce qu’elle est placée dans le dictionnaire du contexte sous la clé centre. La vue accueil utilise maintenant les vrais objets Centre de la base, et remplace les dictionnaires de démonstration du premier module. Chaque élément possède donc sa clé primaire pk, nécessaire pour construire le lien de détail.",
+        "code": "from django.shortcuts import get_object_or_404, render\nfrom .models import Centre\n\ndef accueil(request):\n    centres = Centre.objects.order_by(\"nom\", \"pk\")\n    return render(request, \"centres/accueil.html\", {\"centres\": centres})\n\ndef detail(request, pk):\n    centre = get_object_or_404(Centre, pk=pk)\n    return render(\n        request,\n        \"centres/detail.html\",\n        {\"centre\": centre},\n    )",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "Construire les liens avec le nom de la route",
+        "body": "Une URL nommée évite d’écrire en dur un chemin comme /centres/7/. Dans la liste, la balise url reçoit le nom centres:detail et la clé du centre courant. Le préfixe centres vient de app_name ; il évite les collisions avec les routes d’autres applications. Si le chemin change, les liens générés continuent de suivre la route. Dans la fiche, conserve l’héritage de base.html pour retrouver la navigation et les styles communs.",
+        "code": "<!-- Dans la boucle de la page d’accueil -->\n<a href=\"{% url 'centres:detail' centre.pk %}\">\n  Découvrir {{ centre.nom }}\n</a>\n\n<!-- centres/templates/centres/detail.html -->\n{% extends \"base.html\" %}\n{% block content %}\n  <h1>{{ centre.nom }}</h1>\n  <p>{{ centre.pays }}</p>\n  <p>{{ centre.description }}</p>\n  <a href=\"{% url 'centres:accueil' %}\">Tous les centres</a>\n{% endblock %}",
+        "language": "html",
+        "filename": "Templates de liste et de détail"
+      },
+      {
+        "title": "Vérifier le parcours complet",
+        "body": "Ouvre une fiche depuis la liste, puis saisis volontairement un identifiant absent. Tu dois obtenir respectivement une page de détail et une réponse 404. Essaie aussi une portion non numérique : elle ne correspond pas au convertisseur int. Ce contrôle porte sur l’existence d’un objet. Si certaines fiches sont réservées à un membre, il faudra également filtrer les objets accessibles ou contrôler ses droits dans la vue ; connaître un identifiant ne donne pas une autorisation.",
+        "bullets": [
+          "Le lien transmet la clé primaire du centre affiché.",
+          "La vue retrouve exactement un objet et le place dans le contexte.",
+          "Un centre absent produit une 404 ; les permissions seront traitées dans la partie authentification."
+        ]
+      }
+    ],
+    "takeaway": "Une fiche détail suit une chaîne simple : URL avec pk → recherche de l’objet → contexte → template. get_object_or_404 traite proprement un identifiant absent.",
+    "exercise": {
+      "prompt": "Complète le raccourci qui retrouve le centre et produit une 404 s’il n’existe pas.",
+      "code": "centre = ___(Centre, pk=pk)",
+      "answers": [
+        "get_object_or_404"
+      ],
+      "hint": "Son nom décrit les deux issues possibles : obtenir l’objet, ou renvoyer une 404.",
+      "explanation": "get_object_or_404(Centre, pk=pk) s’appuie sur une recherche de l’objet et convertit l’absence de résultat en Http404."
+    },
+    "quiz": [
+      {
+        "question": "La route contient <int:pk>. Que reçoit la vue pour /centres/12/ ?",
+        "options": [
+          "La chaîne complète /centres/12/",
+          "L’entier 12 dans le paramètre pk",
+          "Le douzième centre classé par nom",
+          "Un objet Centre déjà chargé"
+        ],
+        "correct": 1,
+        "hint": "Le convertisseur transforme une portion du chemin, sans interroger la base.",
+        "explanation": "Le paramètre pk vaut l’entier 12. La vue doit encore effectuer la recherche du centre correspondant."
+      },
+      {
+        "question": "Un ancien lien pointe vers un centre supprimé. Quel résultat est le plus adapté ?",
+        "options": [
+          "Créer automatiquement un centre vide",
+          "Afficher la première salle disponible",
+          "Une réponse HTTP 404",
+          "Répondre 200 avec une erreur silencieuse"
+        ],
+        "correct": 2,
+        "hint": "La ressource demandée n’existe plus.",
+        "explanation": "Une 404 indique que la ressource n’a pas été trouvée. get_object_or_404 permet de produire cette réponse sans erreur serveur non gérée."
+      },
+      {
+        "question": "Pourquoi écrire {% url 'centres:detail' centre.pk %} ?",
+        "options": [
+          "Pour construire le lien à partir de la route nommée et du bon identifiant",
+          "Pour exécuter une requête SQL dans le template",
+          "Pour enregistrer les changements du centre",
+          "Pour autoriser automatiquement tous les visiteurs"
+        ],
+        "correct": 0,
+        "hint": "La balise url résout un nom de route.",
+        "explanation": "La route nommée et son argument permettent à Django de générer le chemin. Cette opération ne charge pas l’objet et n’accorde aucun droit."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Que fait le convertisseur <int:pk> ?",
+        "back": "Il extrait une portion numérique de l’URL et la transmet comme entier à la vue. L’existence de l’objet reste à vérifier."
+      },
+      {
+        "front": "Pourquoi utiliser get_object_or_404 ?",
+        "back": "Pour obtenir un objet unique et renvoyer une réponse 404 si aucun objet ne correspond aux critères."
+      }
+    ]
+  },
+  {
+    "id": "c2",
+    "moduleId": "crud",
+    "order": 15,
+    "title": "Créer un centre avec un formulaire",
+    "shortTitle": "Créer un centre",
+    "duration": 18,
+    "pages": "64–69",
+    "intro": "L’interface de création transforme une saisie en un nouvel objet Centre. Tu vas distinguer l’affichage du formulaire, la réception des données, leur validation et l’enregistrement. Le ModelForm complète l’approche du support en centralisant ces vérifications.",
+    "objectives": [
+      "Construire un ModelForm limité aux champs autorisés",
+      "Valider un formulaire côté serveur avant de sauvegarder",
+      "Associer POST, protection CSRF et redirection"
+    ],
+    "sections": [
+      {
+        "title": "Décrire les champs éditables",
+        "body": "CentreForm hérite de ModelForm et réutilise les caractéristiques du modèle Centre : types, longueurs maximales et champs obligatoires. La liste fields précise ce que l’utilisateur peut modifier. Elle contient nom, pays et description ; aucun champ interne n’est ajouté implicitement à l’interface. Cette déclaration facilite la maintenance : la logique du formulaire reste au même endroit et pourra servir aussi à la modification. Le support manipule les données reçues directement ; cette adaptation introduit une validation réutilisable.",
+        "code": "from django import forms\nfrom .models import Centre\n\nclass CentreForm(forms.ModelForm):\n    class Meta:\n        model = Centre\n        fields = (\"nom\", \"pays\", \"description\")",
+        "language": "python",
+        "filename": "centres/forms.py"
+      },
+      {
+        "title": "Traiter GET et POST sans confondre réception et validation",
+        "body": "Une requête GET affiche un formulaire vierge. Une requête POST crée un formulaire lié aux données reçues, même si elles sont vides ou incorrectes. La méthode HTTP ne prouve donc jamais que les champs sont remplis. is_valid() vérifie et nettoie les valeurs ; save() n’arrive qu’après ce contrôle. Si une erreur existe, la même page est rendue avec les données saisies et les messages associés. Le décorateur exige déjà la permission d’ajouter un centre : teste avec le superutilisateur connecté dans l’administration. Les permissions seront détaillées dans la quatrième partie.",
+        "code": "from django.contrib.auth.decorators import permission_required\nfrom django.shortcuts import redirect, render\nfrom .forms import CentreForm\n\n@permission_required(\"centres.add_centre\", raise_exception=True)\ndef creer(request):\n    if request.method == \"POST\":\n        form = CentreForm(request.POST)\n        if form.is_valid():\n            centre = form.save()\n            return redirect(\"centres:detail\", pk=centre.pk)\n    else:\n        form = CentreForm()\n    return render(request, \"centres/formulaire.html\", {\"form\": form})",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "Afficher les champs, les erreurs et le jeton CSRF",
+        "body": "Le template contient un formulaire avec method=\"post\". Le jeton CSRF est envoyé avec la soumission et vérifié par Django pour protéger les actions réalisées depuis une session de navigateur. Il ne remplace ni les permissions ni la validation. form.as_p affiche les champs et leurs erreurs ; dans une interface plus travaillée, tu peux rendre chaque champ séparément tout en conservant ses messages. Un bouton de type submit déclenche réellement l’envoi du formulaire.",
+        "code": "{% extends \"base.html\" %}\n{% block content %}\n  <h1>Enregistrer un centre</h1>\n  <form method=\"post\">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type=\"submit\">Enregistrer</button>\n  </form>\n  <a href=\"{% url 'centres:accueil' %}\">Annuler</a>\n{% endblock %}",
+        "language": "html",
+        "filename": "centres/templates/centres/formulaire.html"
+      },
+      {
+        "title": "Fermer la boucle avec une redirection",
+        "body": "Ajoute la route creer/ et un lien vers centres:creer dans la navigation autorisée. Après un enregistrement valide, la vue redirige vers la fiche créée : le navigateur termine sur un GET. Ce parcours, appelé POST–Redirect–GET, évite qu’un simple rechargement de la page de confirmation renvoie le formulaire initial. Vérifie deux cas : une saisie correcte ajoute exactement une salle ; un nom vide conserve le formulaire, affiche une erreur et ne crée aucune ligne.",
+        "code": "# À ajouter dans urlpatterns, dans centres/urls.py\npath(\"creer/\", views.creer, name=\"creer\"),",
+        "language": "python",
+        "filename": "centres/urls.py",
+        "callout": "Une réponse 403 dans cet exemple signifie que le compte courant n’a pas la permission centres.add_centre. Le superutilisateur créé précédemment possède cette permission."
+      }
+    ],
+    "takeaway": "Recevoir un POST ne suffit pas : lie les données au formulaire, appelle is_valid(), sauvegarde uniquement si elles sont valides, puis redirige.",
+    "exercise": {
+      "prompt": "Complète la méthode qui vérifie le formulaire avant son enregistrement.",
+      "code": "if form.___():\n    centre = form.save()",
+      "answers": [
+        "is_valid"
+      ],
+      "hint": "Le nom exprime « est valide » en anglais.",
+      "explanation": "is_valid() déclenche les validations du formulaire et renseigne ses erreurs. Un formulaire invalide doit être réaffiché sans sauvegarde."
+    },
+    "quiz": [
+      {
+        "question": "Un utilisateur envoie un formulaire POST vide. Que peut-on affirmer ?",
+        "options": [
+          "Django le convertit automatiquement en GET",
+          "Le centre est déjà enregistré",
+          "Tous les champs obligatoires sont valides",
+          "Les données doivent encore passer la validation du formulaire"
+        ],
+        "correct": 3,
+        "hint": "POST décrit la méthode de la requête, pas la qualité de son contenu.",
+        "explanation": "Un POST peut contenir des valeurs absentes ou incorrectes. La vue doit toujours vérifier form.is_valid() avant d’enregistrer."
+      },
+      {
+        "question": "Quel est l’intérêt de définir explicitement fields dans CentreForm ?",
+        "options": [
+          "Choisir précisément les champs que le formulaire autorise à éditer",
+          "Désactiver la validation du modèle",
+          "Créer une seconde table Centre",
+          "Rendre tous les champs facultatifs"
+        ],
+        "correct": 0,
+        "hint": "Pense à un futur champ interne ajouté au modèle.",
+        "explanation": "Une liste explicite limite le formulaire aux champs choisis. Un nouveau champ sensible ajouté au modèle ne devient pas automatiquement éditable."
+      },
+      {
+        "question": "Pourquoi rediriger après la création réussie ?",
+        "options": [
+          "Pour supprimer les données du formulaire dans la base",
+          "Pour terminer le parcours sur une page GET et limiter les renvois du POST au rechargement",
+          "Pour éviter toute validation côté serveur",
+          "Pour donner la permission d’ajout au visiteur"
+        ],
+        "correct": 1,
+        "hint": "Imagine que l’utilisateur recharge sa page après l’enregistrement.",
+        "explanation": "Le schéma POST–Redirect–GET fait aboutir le navigateur sur une page de consultation. Il ne remplace pas les contraintes de base ou les autres protections contre des soumissions répétées."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle différence entre un formulaire lié et un formulaire valide ?",
+        "back": "Un formulaire lié a reçu des données. Il devient valide seulement si is_valid() confirme que les règles de validation sont respectées."
+      },
+      {
+        "front": "Quel est le rôle de {% csrf_token %} ?",
+        "back": "Ajouter au formulaire POST le jeton contrôlé par la protection CSRF de Django. Ce mécanisme ne remplace ni les permissions ni la validation des champs."
+      }
+    ]
+  },
+  {
+    "id": "c3",
+    "moduleId": "crud",
+    "order": 16,
+    "title": "Modifier un centre sans en créer un autre",
+    "shortTitle": "Modifier un centre",
+    "duration": 14,
+    "pages": "69–72",
+    "intro": "La création et la modification utilisent les mêmes champs, mais elles ne visent pas le même résultat. Pour modifier une salle existante, le formulaire doit rester attaché à son instance, de l’affichage initial jusqu’à l’enregistrement.",
+    "objectives": [
+      "Préremplir un ModelForm avec un objet existant",
+      "Conserver la même instance lors du POST",
+      "Vérifier qu’une modification ne crée pas un doublon"
+    ],
+    "sections": [
+      {
+        "title": "Identifier la salle avant d’éditer",
+        "body": "L’URL de modification contient la clé primaire du centre ciblé. Commence par récupérer cet objet avec get_object_or_404 : une demande visant un centre absent doit produire une 404. Cette recherche doit être effectuée côté serveur, à partir de la route ; ne te fie pas à un champ caché envoyé par le navigateur pour choisir librement l’objet à modifier. Dans Musculor, la permission change_centre réserve l’opération aux comptes autorisés. Une règle supplémentaire serait nécessaire pour limiter chaque gestionnaire à ses propres salles.",
+        "code": "# Dans centres/urls.py, à ajouter à urlpatterns\npath(\"<int:pk>/modifier/\", views.modifier, name=\"modifier\"),",
+        "language": "python",
+        "filename": "centres/urls.py"
+      },
+      {
+        "title": "Conserver instance à chaque étape",
+        "body": "En GET, CentreForm(instance=centre) prépare le formulaire avec les valeurs enregistrées. En POST, CentreForm(request.POST, instance=centre) combine les nouvelles données avec le même objet. Le second argument est décisif : sans instance dans la branche POST, le formulaire peut créer une nouvelle ligne lors de save(). Avec instance, il met à jour le centre récupéré. La clé primaire reste identique, même lorsque son nom ou son pays change.",
+        "code": "from django.contrib.auth.decorators import permission_required\nfrom django.shortcuts import get_object_or_404, redirect, render\nfrom .forms import CentreForm\nfrom .models import Centre\n\n@permission_required(\"centres.change_centre\", raise_exception=True)\ndef modifier(request, pk):\n    centre = get_object_or_404(Centre, pk=pk)\n    if request.method == \"POST\":\n        form = CentreForm(request.POST, instance=centre)\n        if form.is_valid():\n            form.save()\n            return redirect(\"centres:detail\", pk=centre.pk)\n    else:\n        form = CentreForm(instance=centre)\n    return render(\n        request, \"centres/formulaire.html\",\n        {\"form\": form, \"centre\": centre},\n    )",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "Réutiliser le template et rendre l’action explicite",
+        "body": "Le template de création peut être réutilisé puisque le formulaire connaît déjà ses valeurs. Adapte simplement le titre selon la présence de centre dans le contexte. L’utilisateur doit reconnaître la salle qu’il modifie et disposer d’un moyen d’annuler sans enregistrer. Le formulaire conserve method=\"post\", csrf_token et l’affichage des erreurs. Dans la fiche détail, génère le lien de modification avec la route nommée et la clé primaire ; la visibilité du lien améliore l’interface, mais la vue reste responsable du contrôle des droits.",
+        "code": "<!-- Titre du template centres/formulaire.html -->\n{% if centre %}\n  <h1>Modifier {{ centre.nom }}</h1>\n{% else %}\n  <h1>Créer un centre</h1>\n{% endif %}\n\n<!-- Lien dans centres/detail.html -->\n{% if perms.centres.change_centre %}\n  <a href=\"{% url 'centres:modifier' centre.pk %}\">Modifier</a>\n{% endif %}",
+        "language": "html",
+        "filename": "Templates de formulaire et de détail"
+      },
+      {
+        "title": "Contrôler le résultat dans la base et l’interface",
+        "body": "Choisis une salle, note sa clé primaire et le nombre total de centres, puis modifie uniquement sa description. Après validation, la fiche doit refléter la nouvelle description, garder la même clé et ne pas augmenter le nombre de centres. Envoie ensuite une valeur invalide : les erreurs doivent rester visibles et les valeurs enregistrées ne doivent pas être remplacées. Annuler doit simplement ramener à une page de consultation, sans appel à save().",
+        "bullets": [
+          "GET : afficher les valeurs existantes.",
+          "POST valide : mettre à jour la même instance.",
+          "POST invalide : réafficher les erreurs sans enregistrer.",
+          "Annulation : naviguer sans modifier les données."
+        ]
+      }
+    ],
+    "takeaway": "Créer et modifier peuvent partager un ModelForm. L’argument instance=centre indique que save() doit travailler sur l’objet existant.",
+    "exercise": {
+      "prompt": "Complète l’argument qui relie le formulaire soumis au centre existant.",
+      "code": "form = CentreForm(request.POST, ___=centre)",
+      "answers": [
+        "instance"
+      ],
+      "hint": "Il désigne l’objet concret que le formulaire doit mettre à jour.",
+      "explanation": "instance=centre transmet au ModelForm l’objet déjà chargé. Sans cet argument, un formulaire valide peut créer une nouvelle ligne au lieu de modifier l’ancienne."
+    },
+    "quiz": [
+      {
+        "question": "Le formulaire de modification est prérempli en GET, mais le POST oublie instance=centre. Quel risque apparaît ?",
+        "options": [
+          "La clé primaire est forcément supprimée",
+          "Une nouvelle ligne peut être créée au lieu de modifier le centre",
+          "Le navigateur ne peut plus envoyer de formulaire",
+          "Django désactive automatiquement toutes les permissions"
+        ],
+        "correct": 1,
+        "hint": "Le formulaire soumis doit savoir quel objet sauvegarder.",
+        "explanation": "Le préremplissage en GET ne suffit pas. Le ModelForm du POST doit lui aussi recevoir l’instance existante pour effectuer la mise à jour."
+      },
+      {
+        "question": "Après avoir renommé le centre 7, quel résultat confirme une modification correcte ?",
+        "options": [
+          "Un centre 8 apparaît et le centre 7 reste inchangé",
+          "Le nombre de centres augmente d’une unité",
+          "Le centre 7 porte le nouveau nom et le nombre total reste identique",
+          "Tous les centres portent le nouveau nom"
+        ],
+        "correct": 2,
+        "hint": "Une modification conserve l’identité de l’objet.",
+        "explanation": "La clé primaire identifie toujours la même ligne. Seuls les champs édités changent ; le nombre de centres ne doit pas augmenter."
+      },
+      {
+        "question": "Un bouton Modifier est masqué pour un utilisateur. Est-ce une protection suffisante ?",
+        "options": [
+          "Oui, puisqu’un utilisateur ne peut jamais saisir une URL",
+          "Oui, si le bouton utilise du CSS",
+          "Oui, si le centre a un identifiant difficile à deviner",
+          "Non, la vue doit vérifier l’autorisation côté serveur"
+        ],
+        "correct": 3,
+        "hint": "Une requête peut être envoyée sans cliquer sur ton interface.",
+        "explanation": "Masquer le bouton rend l’interface cohérente avec les droits. Seul un contrôle côté serveur empêche une modification non autorisée."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "À quoi sert instance=centre dans un ModelForm ?",
+        "back": "À préremplir le formulaire en GET et à mettre à jour ce même objet en POST. L’argument doit être présent dans les deux branches."
+      },
+      {
+        "front": "Comment distinguer une modification d’une création accidentelle ?",
+        "back": "Vérifier que la clé primaire reste la même et que le nombre total de lignes ne change pas après l’enregistrement."
+      }
+    ]
+  },
+  {
+    "id": "c4",
+    "moduleId": "crud",
+    "order": 17,
+    "title": "Supprimer un centre après confirmation",
+    "shortTitle": "Supprimer un centre",
+    "duration": 14,
+    "pages": "72–75",
+    "intro": "Une suppression doit être volontaire et autorisée. Le parcours comporte deux étapes : afficher une confirmation, puis supprimer seulement après l’envoi du formulaire. Ouvrir un lien ou recharger une page de consultation ne doit jamais effacer une salle.",
+    "objectives": [
+      "Séparer la confirmation GET de la suppression POST",
+      "Protéger la suppression avec permission et CSRF",
+      "Prévoir une annulation et une destination après suppression"
+    ],
+    "sections": [
+      {
+        "title": "Une page de confirmation ne modifie rien",
+        "body": "Le lien Supprimer mène à une page qui rappelle le nom du centre et les conséquences de l’action. Son chargement utilise GET et n’efface aucune donnée. Cette séparation est essentielle : navigateurs, robots et outils de préchargement peuvent consulter des liens sans intention de supprimer. Le visiteur doit encore envoyer un formulaire POST. Le serveur doit vérifier ses droits, même si le lien était visible uniquement pour les gestionnaires dans le template.",
+        "code": "# Dans centres/urls.py, à ajouter à urlpatterns\npath(\"<int:pk>/supprimer/\", views.supprimer, name=\"supprimer\"),",
+        "language": "python",
+        "filename": "centres/urls.py"
+      },
+      {
+        "title": "Exécuter delete uniquement dans la branche POST",
+        "body": "La vue retrouve le centre, contrôle la méthode et n’appelle delete() que pour une requête POST autorisée. Le décorateur require_http_methods limite les méthodes acceptées à GET et POST. Après suppression, la fiche de détail n’existe plus : redirige vers la liste. Si le centre a déjà disparu, get_object_or_404 répond proprement. Le contrôle de permission est effectué avant la logique métier ; une personne sans droit de suppression reçoit une réponse 403.",
+        "code": "from django.contrib.auth.decorators import permission_required\nfrom django.shortcuts import get_object_or_404, redirect, render\nfrom django.views.decorators.http import require_http_methods\nfrom .models import Centre\n\n@permission_required(\"centres.delete_centre\", raise_exception=True)\n@require_http_methods([\"GET\", \"POST\"])\ndef supprimer(request, pk):\n    centre = get_object_or_404(Centre, pk=pk)\n    if request.method == \"POST\":\n        centre.delete()\n        return redirect(\"centres:accueil\")\n    return render(\n        request, \"centres/confirmer_suppression.html\",\n        {\"centre\": centre},\n    )",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "Donner un choix clair à l’utilisateur",
+        "body": "Le template annonce précisément quel centre sera supprimé. Le bouton de confirmation soumet le formulaire ; le lien Annuler retourne à la fiche sans modifier les données. Conserve csrf_token à l’intérieur du formulaire POST. Un intitulé comme « Supprimer ce centre » est plus explicite qu’un simple « OK ». Le jeton CSRF et la permission répondent à deux questions différentes : la requête vient-elle d’un parcours autorisé du navigateur, et ce compte a-t-il le droit d’effectuer l’action ?",
+        "code": "{% extends \"base.html\" %}\n{% block content %}\n  <h1>Supprimer {{ centre.nom }} ?</h1>\n  <p>Cette suppression ne pourra pas être annulée ici.</p>\n  <form method=\"post\">\n    {% csrf_token %}\n    <button type=\"submit\">Supprimer ce centre</button>\n  </form>\n  <a href=\"{% url 'centres:detail' centre.pk %}\">Annuler</a>\n{% endblock %}",
+        "language": "html",
+        "filename": "centres/templates/centres/confirmer_suppression.html"
+      },
+      {
+        "title": "Penser aux relations avant d’effacer",
+        "body": "Une ligne peut être liée à d’autres données. Les règles on_delete définies sur les clés étrangères déterminent ce qui arrive aux objets qui référencent le centre : suppression en cascade, protection ou autre comportement configuré. Avant de proposer l’action, connais ce résultat. Pour certaines données métier, un champ actif et un archivage sont plus adaptés à l’historique. Ici, teste avec une salle fictive sans dépendances : GET conserve la ligne, Annuler la conserve aussi, et le POST confirmé retire exactement la salle choisie.",
+        "bullets": [
+          "Consulter la confirmation ne supprime rien.",
+          "Annuler conserve le centre et ses données.",
+          "Confirmer supprime uniquement si la requête et les droits sont valides.",
+          "Les effets sur les objets liés dépendent des relations du modèle."
+        ]
+      }
+    ],
+    "takeaway": "GET montre la confirmation ; POST réalise la suppression. Permission, CSRF et règles de relations restent nécessaires pour une action maîtrisée.",
+    "exercise": {
+      "prompt": "Complète la méthode HTTP autorisant l’appel à delete() après confirmation.",
+      "code": "if request.method == \"___\":\n    centre.delete()",
+      "answers": [
+        "POST"
+      ],
+      "hint": "La consultation utilise GET ; l’action volontaire est envoyée par le formulaire.",
+      "explanation": "Le POST déclenche la branche de suppression après contrôle des droits et du jeton CSRF. Un simple GET doit rester sans effet sur les données."
+    },
+    "quiz": [
+      {
+        "question": "Un robot ouvre le lien /centres/7/supprimer/. Que doit faire une vue correctement conçue pour ce GET ?",
+        "options": [
+          "Supprimer le centre immédiatement",
+          "Supprimer tous les centres de test",
+          "Afficher une confirmation sans supprimer",
+          "Désactiver la protection CSRF"
+        ],
+        "correct": 2,
+        "hint": "Ouvrir un lien ne traduit pas une confirmation de l’utilisateur.",
+        "explanation": "GET doit permettre la consultation de la confirmation sans effet destructeur. La suppression attend une requête POST autorisée."
+      },
+      {
+        "question": "Après la suppression réussie, quelle destination est adaptée ?",
+        "options": [
+          "La liste des centres encore présents",
+          "La fiche du centre supprimé",
+          "Une nouvelle sauvegarde du formulaire de création",
+          "Le fichier models.py"
+        ],
+        "correct": 0,
+        "hint": "La ressource supprimée ne peut plus servir de page de confirmation.",
+        "explanation": "Rediriger vers la liste permet de constater la disparition du centre et de poursuivre la navigation. Sa fiche doit désormais répondre 404."
+      },
+      {
+        "question": "Une clé étrangère référence le centre à supprimer. Que faut-il examiner ?",
+        "options": [
+          "La couleur du bouton Supprimer",
+          "L’ordre des variables dans le template",
+          "Le nom du navigateur",
+          "La règle on_delete et les données qui dépendent du centre"
+        ],
+        "correct": 3,
+        "hint": "La suppression peut avoir un effet au-delà de la ligne visée.",
+        "explanation": "on_delete définit le traitement des objets liés. Il faut connaître ces effets avant d’exposer une suppression dans l’interface."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Pourquoi ne jamais supprimer un objet lors d’un GET ?",
+        "back": "GET sert à consulter. Un lien peut être ouvert ou préchargé sans intention de supprimer ; une action destructrice demande un POST volontaire et protégé."
+      },
+      {
+        "front": "Que doit contenir une confirmation de suppression ?",
+        "back": "L’objet précis concerné, les conséquences utiles à connaître, un formulaire POST avec CSRF et un moyen d’annuler sans rien modifier."
+      }
+    ]
+  },
+  {
+    "id": "a1",
+    "moduleId": "auth",
+    "order": 18,
+    "title": "Organiser l’authentification dans accounts",
+    "shortTitle": "L’application accounts",
+    "duration": 12,
+    "pages": "76–77",
+    "intro": "Le parcours entre dans l’authentification. L’application accounts, préparée dès le démarrage pour accueillir le modèle utilisateur, va maintenant recevoir les pages de connexion, de déconnexion et d’inscription. Tu vas comprendre comment elle s’insère dans le projet.",
+    "objectives": [
+      "Séparer la gestion des comptes de celle des centres",
+      "Vérifier les composants Django nécessaires aux sessions",
+      "Préparer un espace de routes pour les comptes"
+    ],
+    "sections": [
+      {
+        "title": "Retrouver le squelette créé au début",
+        "body": "L’application centres gère les salles et leurs opérations métier. L’application accounts rassemble les écrans liés à l’identité. Cette séparation facilite la lecture du projet, sans imposer un second serveur ni une seconde base de données. Le squelette accounts et son modèle User ont déjà été créés dans la leçon de configuration : ne relance pas startapp sur ce dossier. À ce stade, vérifie plutôt que Django reconnaît l’application et ses migrations. Les pages seront ajoutées progressivement dans les leçons suivantes.",
+        "code": "python manage.py check\npython manage.py showmigrations accounts",
+        "language": "bash",
+        "filename": "Terminal, environnement virtuel activé"
+      },
+      {
+        "title": "Conserver les composants qui travaillent ensemble",
+        "body": "Le système de comptes s’appuie sur django.contrib.auth pour les utilisateurs et permissions, sur contenttypes pour identifier les modèles et sur sessions pour retrouver une session entre deux requêtes. Ces applications font partie de la configuration de départ. Conserve aussi SessionMiddleware avant AuthenticationMiddleware dans MIDDLEWARE : le second utilise la session pour fournir request.user. Le navigateur conserve un identifiant de session dans un cookie ; il n’a pas besoin de renvoyer le mot de passe à chaque page.",
+        "code": "INSTALLED_APPS = [\n    \"django.contrib.admin\",\n    \"django.contrib.auth\",\n    \"django.contrib.contenttypes\",\n    \"django.contrib.sessions\",\n    \"django.contrib.messages\",\n    \"django.contrib.staticfiles\",\n    \"centres\",\n    \"accounts\",\n]",
+        "language": "python",
+        "filename": "musculor/settings.py"
+      },
+      {
+        "title": "Préparer un espace de navigation cohérent",
+        "body": "Le routeur principal délègue les chemins commençant par comptes/ à accounts.urls. Comme pour centres, un namespace rend les noms non ambigus. Le fichier de l’application peut être créé avec une liste vide, puis complété avec connexion, deconnexion et inscription. N’ajoute pas de route vers une fonction qui n’existe pas encore : Django importe ces références au démarrage. L’URL choisie et le nom technique de l’application peuvent différer ; comptes/ est le chemin visible, accounts est le module Python.",
+        "code": "# accounts/urls.py\napp_name = \"accounts\"\nurlpatterns = []\n\n# musculor/urls.py : ajouter à urlpatterns\npath(\"comptes/\", include(\"accounts.urls\")),",
+        "language": "python",
+        "filename": "accounts/urls.py et musculor/urls.py",
+        "callout": "Dans musculor/urls.py, conserve l’import from django.urls import include, path et les routes existantes. Les leçons suivantes rempliront accounts/urls.py."
+      },
+      {
+        "title": "Distinguer identité, session et autorisation",
+        "body": "Le modèle utilisateur représente une personne enregistrée. La session relie les requêtes de son navigateur à une connexion en cours. Les permissions définissent les actions autorisées. Ces trois notions ne sont pas interchangeables : créer un compte ne connecte pas nécessairement la personne, et se connecter ne donne pas le droit de modifier les centres. Sans session authentifiée, request.user représente un utilisateur anonyme. L’interface pourra afficher un lien de connexion ou le nom du membre en fonction de user.is_authenticated.",
+        "code": "{% if user.is_authenticated %}\n  <p>Bonjour {{ user.username }}</p>\n{% else %}\n  <p>Vous consultez Musculor comme visiteur.</p>\n{% endif %}",
+        "language": "html",
+        "filename": "Extrait de base.html"
+      }
+    ],
+    "takeaway": "accounts organise les comptes ; auth, sessions et les middlewares rendent l’identité disponible entre les requêtes. Les permissions restent une couche distincte.",
+    "exercise": {
+      "prompt": "Complète la fonction qui délègue les URL comptes/ au fichier de routes d’accounts.",
+      "code": "path(\"comptes/\", ___(\"accounts.urls\")),",
+      "answers": [
+        "include"
+      ],
+      "hint": "Tu as déjà utilisé cette fonction pour les routes de l’application centres.",
+      "explanation": "include() délègue la suite du chemin à un autre module de routes. Le namespace accounts sera déclaré dans ce module."
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi séparer accounts de centres ?",
+        "options": [
+          "Pour obtenir automatiquement deux bases de données",
+          "Pour organiser les comptes et la logique des salles dans des applications distinctes",
+          "Pour supprimer le besoin de middlewares",
+          "Pour contourner le système de permissions"
+        ],
+        "correct": 1,
+        "hint": "Une application Django sert d’abord à organiser un domaine fonctionnel.",
+        "explanation": "Cette séparation clarifie la responsabilité des fichiers. Les applications peuvent partager le même projet, la même base et le même serveur."
+      },
+      {
+        "question": "Quel ordre faut-il conserver entre ces deux middlewares ?",
+        "options": [
+          "AuthenticationMiddleware avant SessionMiddleware",
+          "Ils doivent être retirés tous les deux",
+          "SessionMiddleware avant AuthenticationMiddleware",
+          "Leur ordre dépend du nom du compte"
+        ],
+        "correct": 2,
+        "hint": "L’identification de l’utilisateur s’appuie sur sa session.",
+        "explanation": "SessionMiddleware fournit la session. AuthenticationMiddleware s’en sert ensuite pour associer l’utilisateur à la requête."
+      },
+      {
+        "question": "Un compte existe dans la base. Qu’est-ce que cela garantit ?",
+        "options": [
+          "La personne possède une identité enregistrée, mais pas forcément une session ouverte ou des permissions de gestion",
+          "La personne est connectée sur tous ses appareils",
+          "La personne peut forcément supprimer un centre",
+          "La personne est automatiquement superutilisatrice"
+        ],
+        "correct": 0,
+        "hint": "Existence du compte, connexion et autorisations sont trois états différents.",
+        "explanation": "Enregistrer un utilisateur crée son compte. Il faut encore l’authentifier pour ouvrir une session et lui attribuer les permissions adaptées."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Que contient request.user pour un visiteur non connecté ?",
+        "back": "Un objet AnonymousUser. Sa propriété is_authenticated vaut False."
+      },
+      {
+        "front": "Quelle différence entre authentification et autorisation ?",
+        "back": "L’authentification établit l’identité du visiteur. L’autorisation détermine ce que cette identité a le droit de faire."
+      }
+    ]
+  },
+  {
+    "id": "a2",
+    "moduleId": "auth",
+    "order": 19,
+    "title": "Comprendre le modèle utilisateur personnalisé",
+    "shortTitle": "Le modèle User",
+    "duration": 16,
+    "pages": "77–81",
+    "intro": "Musculor utilise accounts.User, un modèle basé sur AbstractUser. Ce choix a été déclaré avant les premières migrations. Tu vas maintenant comprendre ses champs, ses permissions et les règles à respecter pour faire évoluer les comptes.",
+    "objectives": [
+      "Comprendre ce qu’apporte AbstractUser",
+      "Référencer le modèle déclaré par AUTH_USER_MODEL",
+      "Faire évoluer le modèle sans effacer les données"
+    ],
+    "sections": [
+      {
+        "title": "Étendre une base complète avec AbstractUser",
+        "body": "AbstractUser fournit la structure habituelle d’un compte Django : identifiant, informations de profil, mot de passe haché, indicateurs et relations avec les permissions. Notre classe peut être vide et conserver tous ces éléments. Elle donne un point d’extension pour un futur champ métier. AbstractBaseUser est une base plus minimale, qui demande davantage de configuration ; ce parcours n’en a pas besoin. Un champ texte appelé rôle serait seulement une donnée descriptive tant que le code ne lui associe pas de règles d’accès.",
+        "code": "from django.contrib.auth.models import AbstractUser\n\nclass User(AbstractUser):\n    pass",
+        "language": "python",
+        "filename": "accounts/models.py"
+      },
+      {
+        "title": "Comprendre pourquoi ce choix précède les migrations",
+        "body": "AUTH_USER_MODEL indique à Django quel modèle représente les comptes. Les autres tables peuvent créer des relations vers lui dès les premières migrations. C’est pour cela que le squelette accounts.User a été défini dans la première partie, avant migrate. Ici, nous expliquons ce choix déjà réalisé : nous ne remplaçons aucun modèle en cours de projet. Modifier cette configuration après création des tables peut demander une migration de schéma et de données planifiée.",
+        "code": "# Déjà défini avant les premières migrations\nAUTH_USER_MODEL = \"accounts.User\"",
+        "language": "python",
+        "filename": "musculor/settings.py",
+        "callout": "Si ton propre projet utilise déjà un autre modèle et contient des données, ne remplace pas ce réglage à l’aveugle. Sauvegarde et prépare une migration adaptée ; supprimer la base ou les migrations n’est pas une méthode générale de réparation."
+      },
+      {
+        "title": "Utiliser la référence adaptée au contexte",
+        "body": "Dans une vue ou un formulaire, get_user_model() retourne la classe actuellement configurée. Dans la déclaration d’une relation de modèle, settings.AUTH_USER_MODEL permet de référencer cette même cible sans importer une classe concrète trop tôt. Ces habitudes rendent les applications compatibles avec le modèle choisi par le projet. Dans le shell, inspecter _meta.label permet de confirmer que tu travailles bien avec accounts.User, et non avec un modèle différent importé par erreur.",
+        "code": "from django.contrib.auth import get_user_model\n\nUser = get_user_model()\nprint(User._meta.label)  # accounts.User\n\n# Dans un modèle qui aurait une relation vers l’utilisateur :\n# models.ForeignKey(settings.AUTH_USER_MODEL,\n#                   on_delete=models.PROTECT)",
+        "language": "python",
+        "filename": "Shell Django et exemple de relation"
+      },
+      {
+        "title": "Lire correctement les indicateurs du compte",
+        "body": "is_active signale si un compte est actif ; les mécanismes d’authentification par défaut prennent cet état en compte. is_staff participe à l’accès au site d’administration, mais n’accorde pas à lui seul toutes les permissions sur les modèles. is_superuser donne les permissions générales pour un compte actif avec le backend habituel. Un membre du staff peut donc entrer dans l’administration sans être superutilisateur, puis gérer seulement les modèles autorisés. Enfin, le champ password conserve un hachage et ses métadonnées, jamais une copie lisible du mot de passe.",
+        "bullets": [
+          "is_active : état actif du compte.",
+          "is_staff : accès à l’administration, avec un compte actif.",
+          "is_superuser : permissions générales avec le backend Django habituel.",
+          "groups et user_permissions : attribution de droits précis."
+        ],
+        "code": "# accounts/admin.py\nfrom django.contrib import admin\nfrom django.contrib.auth.admin import UserAdmin\nfrom .models import User\n\nadmin.site.register(User, UserAdmin)",
+        "language": "python",
+        "filename": "accounts/admin.py"
+      }
+    ],
+    "takeaway": "Le modèle utilisateur se choisit tôt. AbstractUser conserve les mécanismes Django ; get_user_model() et AUTH_USER_MODEL permettent ensuite de le référencer correctement.",
+    "exercise": {
+      "prompt": "Complète la classe de base utilisée par le modèle User de Musculor.",
+      "code": "class User(___):\n    pass",
+      "answers": [
+        "AbstractUser"
+      ],
+      "hint": "Cette base abstraite conserve les champs et le fonctionnement habituels de l’utilisateur Django.",
+      "explanation": "AbstractUser fournit un modèle complet à personnaliser. AbstractBaseUser est plus minimal et demanderait une configuration supplémentaire."
+    },
+    "quiz": [
+      {
+        "question": "À quel moment faut-il normalement déclarer un modèle utilisateur personnalisé ?",
+        "options": [
+          "Après la création de tous les utilisateurs",
+          "Uniquement au moment de la mise en production",
+          "Après chaque connexion",
+          "Avant les premières migrations du projet"
+        ],
+        "correct": 3,
+        "hint": "Les premières relations en base doivent déjà viser la bonne table.",
+        "explanation": "Le modèle doit être choisi avant les migrations initiales. Le remplacer au milieu d’un projet existant peut nécessiter des opérations complexes sur les données et les relations."
+      },
+      {
+        "question": "Un compte actif a is_staff=True et is_superuser=False. Que peut-on en déduire ?",
+        "options": [
+          "Il peut accéder à l’administration, avec les permissions qui lui sont attribuées",
+          "Il possède forcément tous les droits sur tous les modèles",
+          "Il ne peut jamais entrer dans l’administration",
+          "Il n’a pas besoin de mot de passe"
+        ],
+        "correct": 0,
+        "hint": "Staff et superutilisateur sont deux indicateurs différents.",
+        "explanation": "Le statut staff permet l’accès à l’administration pour un compte actif. Les opérations sur les modèles dépendent ensuite de ses permissions."
+      },
+      {
+        "question": "Dans une vue, comment récupérer la classe utilisateur configurée par le projet ?",
+        "options": [
+          "Importer systématiquement django.contrib.auth.models.User",
+          "Appeler get_user_model()",
+          "Lire directement le cookie dans un modèle",
+          "Créer une table User à chaque requête"
+        ],
+        "correct": 1,
+        "hint": "Utilise l’API qui tient compte d’AUTH_USER_MODEL.",
+        "explanation": "get_user_model() renvoie la classe déclarée dans AUTH_USER_MODEL, ici accounts.User. Cela évite de lier le code au modèle intégré par défaut."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Pourquoi configurer AUTH_USER_MODEL avant le premier migrate ?",
+        "back": "Les migrations et relations doivent être construites vers le bon modèle dès le début. Un remplacement tardif demande une stratégie de migration adaptée."
+      },
+      {
+        "front": "is_staff donne-t-il tous les droits ?",
+        "back": "Non. Il permet l’accès à l’administration avec un compte actif. Les permissions sur les modèles restent à attribuer, sauf pour un superutilisateur actif."
+      }
+    ]
+  },
+  {
+    "id": "a3",
+    "moduleId": "auth",
+    "order": 20,
+    "title": "Connecter un utilisateur et ouvrir sa session",
+    "shortTitle": "Se connecter",
+    "duration": 18,
+    "pages": "82–86",
+    "intro": "La connexion comporte deux opérations : vérifier les identifiants, puis associer l’utilisateur à la session. Tu vas comprendre authenticate() et login(), avant de les utiliser à travers le formulaire d’authentification fourni par Django.",
+    "objectives": [
+      "Comprendre que authenticate retourne un utilisateur ou None",
+      "Valider les identifiants avec AuthenticationForm",
+      "Ouvrir une session et afficher les erreurs de connexion"
+    ],
+    "sections": [
+      {
+        "title": "Identifier les deux étapes de la connexion",
+        "body": "authenticate() vérifie les identifiants auprès des backends configurés. Sa réponse est un objet utilisateur si l’authentification réussit, ou None si elle échoue. Ce n’est pas un booléen. Une authentification réussie n’ouvre pas encore la session : login(request, user) associe ensuite cet utilisateur à la requête et à la session. Ne compare jamais toi-même le mot de passe saisi avec le champ password ; le mécanisme Django sait vérifier le hachage enregistré.",
+        "code": "from django.contrib.auth import authenticate, login\n\n# identifiant et mot_de_passe représentent une saisie reçue.\nuser = authenticate(\n    request, username=identifiant, password=mot_de_passe,\n)\nif user is not None:\n    login(request, user)",
+        "language": "python",
+        "filename": "Mécanisme de connexion, extrait pédagogique"
+      },
+      {
+        "title": "Utiliser AuthenticationForm pour la page de connexion",
+        "body": "AuthenticationForm fournit les champs attendus et vérifie les identifiants en s’appuyant sur l’authentification Django. La vue reçoit request et, pour un POST, lui transmet les données saisies. Si le formulaire est valide, get_user() retrouve l’utilisateur authentifié ; login ouvre sa session et la redirection mène vers les centres. En cas d’échec, la vue réaffiche le formulaire avec ses erreurs. Dans cette version volontairement simple, la destination après connexion est fixe.",
+        "code": "from django.contrib.auth import login\nfrom django.contrib.auth.forms import AuthenticationForm\nfrom django.shortcuts import redirect, render\n\ndef connexion(request):\n    form = AuthenticationForm(\n        request,\n        data=request.POST if request.method == \"POST\" else None,\n    )\n    if request.method == \"POST\" and form.is_valid():\n        login(request, form.get_user())\n        return redirect(\"centres:accueil\")\n    return render(request, \"accounts/connexion.html\", {\"form\": form})",
+        "language": "python",
+        "filename": "accounts/views.py"
+      },
+      {
+        "title": "Rendre un formulaire lisible et enregistrer la route",
+        "body": "Le template hérite de base.html et affiche les erreurs du formulaire. Le message d’échec doit rester général : un identifiant ou un mot de passe incorrect ne mérite pas de révéler lequel des deux a été reconnu. Le formulaire doit envoyer un POST contenant le jeton CSRF. Dans accounts/urls.py, importe path et views puis ajoute path(\"connexion/\", views.connexion, name=\"connexion\") à urlpatterns. Le lien {% url 'accounts:connexion' %} devient alors disponible dans la navigation.",
+        "code": "{% extends \"base.html\" %}\n{% block content %}\n  <h1>Se connecter à Musculor</h1>\n  <form method=\"post\">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type=\"submit\">Se connecter</button>\n  </form>\n{% endblock %}",
+        "language": "html",
+        "filename": "accounts/templates/accounts/connexion.html"
+      },
+      {
+        "title": "Tester la session sur plusieurs pages",
+        "body": "Essaie d’abord un mot de passe incorrect : le formulaire doit rester affiché et la session ne doit pas devenir authentifiée. Connecte-toi ensuite avec un compte valide, puis navigue entre deux fiches. request.user doit représenter le même utilisateur sans nouvelle demande de mot de passe. Cette continuité vient de la session. Pour aller plus loin, LoginView fournit un parcours prêt à l’emploi et une gestion contrôlée de la destination suivante ; n’utilise pas une URL next fournie par le navigateur sans vérifier qu’elle est autorisée.",
+        "bullets": [
+          "Échec : erreurs visibles, aucune session authentifiée créée.",
+          "Succès : session ouverte puis redirection.",
+          "Page suivante : utilisateur retrouvé grâce à la session.",
+          "Les permissions de création, modification et suppression restent vérifiées séparément."
+        ]
+      }
+    ],
+    "takeaway": "authenticate retrouve une identité ; login ouvre la session. AuthenticationForm réutilise ce mécanisme et fournit la validation adaptée à une page de connexion.",
+    "exercise": {
+      "prompt": "Complète la valeur qui représente l’échec de authenticate().",
+      "code": "user = authenticate(request, username=nom, password=secret)\nif user is not ___:\n    login(request, user)",
+      "answers": [
+        "None"
+      ],
+      "hint": "En Python, cette valeur signifie l’absence de résultat.",
+      "explanation": "authenticate retourne un objet utilisateur ou None. Tester user is not None exprime explicitement la réussite de l’authentification."
+    },
+    "quiz": [
+      {
+        "question": "Que retourne authenticate lorsque les identifiants sont reconnus ?",
+        "options": [
+          "Toujours le booléen True",
+          "Le mot de passe en clair",
+          "Un objet utilisateur",
+          "Une page HTML"
+        ],
+        "correct": 2,
+        "hint": "Le résultat peut être transmis à login.",
+        "explanation": "authenticate retourne l’utilisateur reconnu, ou None si l’authentification échoue. Le support a été rectifié sur ce point."
+      },
+      {
+        "question": "À quoi sert login(request, user) après une authentification réussie ?",
+        "options": [
+          "À créer systématiquement un nouveau compte",
+          "À ouvrir une session associée à cet utilisateur",
+          "À rendre tous les utilisateurs superutilisateurs",
+          "À copier le mot de passe dans le cookie"
+        ],
+        "correct": 1,
+        "hint": "Il faut conserver l’identité entre les requêtes.",
+        "explanation": "login enregistre les informations nécessaires dans la session. Il ne crée pas de compte et ne modifie pas les permissions de l’utilisateur."
+      },
+      {
+        "question": "Quel comportement adopter si AuthenticationForm est invalide ?",
+        "options": [
+          "Ouvrir quand même une session visiteur authentifiée",
+          "Afficher le mot de passe enregistré pour comparer",
+          "Supprimer le compte correspondant",
+          "Réafficher le formulaire et ses erreurs sans appeler login"
+        ],
+        "correct": 3,
+        "hint": "La connexion ne doit se produire qu’après validation.",
+        "explanation": "Un formulaire invalide doit rester visible avec ses erreurs. Aucun appel à login n’est effectué tant que l’authentification n’a pas réussi."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Que renvoie authenticate() ?",
+        "back": "Un objet utilisateur si un backend accepte les identifiants, sinon None."
+      },
+      {
+        "front": "Quelle différence entre authenticate() et login() ?",
+        "back": "authenticate vérifie les identifiants et retrouve l’utilisateur. login associe cet utilisateur à la session du navigateur."
+      }
+    ]
+  },
+  {
+    "id": "a4",
+    "moduleId": "auth",
+    "order": 21,
+    "title": "Se déconnecter avec une requête POST",
+    "shortTitle": "Se déconnecter",
+    "duration": 10,
+    "pages": "86–88",
+    "intro": "La déconnexion met fin à la session authentifiée du navigateur. Elle ne supprime pas le compte. Tu vas construire une action explicite, protégée par CSRF, et vérifier que les pages réservées demandent ensuite une nouvelle connexion.",
+    "objectives": [
+      "Terminer la session avec logout(request)",
+      "Utiliser un formulaire POST pour la déconnexion",
+      "Différencier fin de session, suppression et désactivation de compte"
+    ],
+    "sections": [
+      {
+        "title": "Comprendre ce qui doit disparaître",
+        "body": "Lorsqu’un utilisateur se déconnecte, son identité enregistrée en base reste disponible pour une prochaine connexion. C’est la session courante qui cesse de lui donner accès au site comme membre authentifié. Django fournit logout(request) pour cette opération ; il nettoie les données de la session et ne demande pas de supprimer manuellement un cookie ou une ligne utilisateur. La déconnexion reste aussi une action : la déclencher par un simple lien GET rendrait le parcours sensible aux ouvertures ou préchargements involontaires.",
+        "code": "from django.contrib.auth import logout\nfrom django.shortcuts import redirect\nfrom django.views.decorators.http import require_POST\n\n@require_POST\ndef deconnexion(request):\n    logout(request)\n    return redirect(\"accounts:connexion\")",
+        "language": "python",
+        "filename": "accounts/views.py"
+      },
+      {
+        "title": "Déclarer une route réservée à l’action",
+        "body": "Ajoute la route deconnexion/ dans accounts.urls. Le décorateur require_POST refuse les autres méthodes HTTP avec une réponse 405. Une saisie manuelle de cette adresse dans la barre du navigateur envoie généralement un GET et ne doit donc pas fermer la session. La route sert au formulaire de navigation. Dans Django 5.2, la vue intégrée LogoutView utilise également POST pour la déconnexion ; l’exemple ci-dessus expose simplement le mécanisme sous forme de fonction.",
+        "code": "# accounts/urls.py : ajouter à urlpatterns\npath(\"deconnexion/\", views.deconnexion, name=\"deconnexion\"),",
+        "language": "python",
+        "filename": "accounts/urls.py"
+      },
+      {
+        "title": "Mettre un petit formulaire dans la navigation",
+        "body": "Un bouton peut ressembler visuellement à un lien tout en conservant la bonne sémantique. Le formulaire indique l’URL de déconnexion, envoie un POST et contient csrf_token. Affiche-le uniquement lorsque l’utilisateur est authentifié ; sinon, propose le lien de connexion. Ce contrôle de présentation évite une action inutile dans l’interface. La protection réelle repose toujours sur le traitement de la requête par Django. Ne construis pas de système artisanal qui place le nom du membre ou son mot de passe dans une URL.",
+        "code": "{% if user.is_authenticated %}\n  <span>{{ user.username }}</span>\n  <form method=\"post\" action=\"{% url 'accounts:deconnexion' %}\">\n    {% csrf_token %}\n    <button type=\"submit\">Se déconnecter</button>\n  </form>\n{% else %}\n  <a href=\"{% url 'accounts:connexion' %}\">Se connecter</a>\n{% endif %}",
+        "language": "html",
+        "filename": "base.html"
+      },
+      {
+        "title": "Vérifier la fin de session",
+        "body": "Connecte-toi, ouvre une fiche, puis utilise le bouton de déconnexion. Tu dois revenir à la connexion et retrouver une navigation de visiteur. Après le chapitre sur les restrictions d’accès, tente d’ouvrir à nouveau une page protégée : le serveur doit demander une authentification. Une ancienne page affichée par le cache du navigateur ne prouve pas que la session est encore active ; c’est une nouvelle requête au serveur qui permet de vérifier le résultat. Le compte, ses données et ses permissions restent inchangés.",
+        "bullets": [
+          "POST avec CSRF : la session courante se termine.",
+          "GET sur la route : la déconnexion n’est pas exécutée.",
+          "Nouvelle connexion : le même compte peut être utilisé.",
+          "Suppression ou désactivation de compte : opérations distinctes."
+        ]
+      }
+    ],
+    "takeaway": "logout termine la session courante. Un formulaire POST avec CSRF permet une déconnexion explicite, sans supprimer le compte.",
+    "exercise": {
+      "prompt": "Complète le décorateur qui interdit une déconnexion par GET.",
+      "code": "@___\ndef deconnexion(request):\n    logout(request)",
+      "answers": [
+        "require_POST"
+      ],
+      "hint": "Il exige une méthode HTTP précise ; son nom comporte POST en majuscules.",
+      "explanation": "require_POST autorise uniquement les requêtes POST pour cette vue. Les autres méthodes reçoivent une réponse HTTP 405."
+    },
+    "quiz": [
+      {
+        "question": "Que fait logout(request) ?",
+        "options": [
+          "Supprimer définitivement le compte",
+          "Supprimer tous les centres créés par l’utilisateur",
+          "Modifier son mot de passe",
+          "Terminer sa session courante sans supprimer son compte"
+        ],
+        "correct": 3,
+        "hint": "L’utilisateur pourra se reconnecter avec ses identifiants.",
+        "explanation": "logout nettoie la session courante. Les données du compte et ses permissions restent enregistrées."
+      },
+      {
+        "question": "Avec @require_POST, que se passe-t-il en ouvrant directement l’URL de déconnexion par GET ?",
+        "options": [
+          "Une réponse 405, sans exécuter la déconnexion",
+          "La suppression de l’utilisateur",
+          "Une déconnexion automatique de tous les comptes",
+          "Une création de compte anonyme"
+        ],
+        "correct": 0,
+        "hint": "La méthode HTTP reçue n’est pas autorisée.",
+        "explanation": "Le décorateur bloque la requête avant l’exécution de la vue. Le formulaire POST est nécessaire pour effectuer l’action."
+      },
+      {
+        "question": "Quelle interface convient à la déconnexion ?",
+        "options": [
+          "Un lien GET sans formulaire",
+          "Un formulaire POST contenant csrf_token et un bouton submit",
+          "Une image qui supprime la session au chargement",
+          "Une URL contenant le mot de passe"
+        ],
+        "correct": 1,
+        "hint": "La déconnexion modifie l’état de la session.",
+        "explanation": "Le formulaire POST exprime l’action volontaire et transporte le jeton CSRF. Un lien de consultation n’est pas adapté à cette opération."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Se déconnecter supprime-t-il le compte ?",
+        "back": "Non. logout termine la session courante ; le compte, ses données et ses permissions restent en base."
+      },
+      {
+        "front": "Comment déclencher une déconnexion avec Django 5.2 ?",
+        "back": "Avec un formulaire POST protégé par CSRF, vers LogoutView ou une vue utilisant logout et require_POST."
+      }
+    ]
+  },
+  {
+    "id": "a5",
+    "moduleId": "auth",
+    "order": 22,
+    "title": "Protéger les pages et les actions",
+    "shortTitle": "Accès et permissions",
+    "duration": 17,
+    "pages": "88–90",
+    "intro": "Être connecté ne signifie pas pouvoir gérer toutes les salles. Tu vas distinguer l’accès réservé aux membres des permissions d’ajout, de modification et de suppression, puis rendre l’interface cohérente avec ces règles.",
+    "objectives": [
+      "Rediriger les visiteurs avec login_required",
+      "Contrôler une permission métier dans la vue",
+      "Vérifier les droits avec plusieurs profils d’utilisateurs"
+    ],
+    "sections": [
+      {
+        "title": "Réserver une page aux utilisateurs authentifiés",
+        "body": "login_required vérifie qu’une identité authentifiée est associée à la requête. Pour un visiteur anonyme, le décorateur redirige vers LOGIN_URL en ajoutant la destination demandée dans un paramètre next. Configure LOGIN_URL avec le nom accounts:connexion. Le décorateur ne produit pas normalement une 404 : si l’ancienne configuration menait à une adresse de connexion inexistante, c’est cette adresse qui était introuvable. Notre page de connexion pédagogique revient ensuite à l’accueil ; LoginView permettrait de traiter next de manière contrôlée.",
+        "code": "# musculor/settings.py\nLOGIN_URL = \"accounts:connexion\"\n\n# Dans une vue réservée aux membres\nfrom django.contrib.auth.decorators import login_required\nfrom django.shortcuts import render\nfrom centres.models import Centre\n\n@login_required\ndef espace_membre(request):\n    centres = Centre.objects.order_by(\"nom\", \"pk\")\n    return render(request, \"centres/accueil.html\", {\"centres\": centres})",
+        "language": "python",
+        "filename": "Réglage et exemple de vue"
+      },
+      {
+        "title": "Exiger le droit correspondant à l’opération",
+        "body": "Les permissions standards du modèle Centre sont centres.add_centre, centres.view_centre, centres.change_centre et centres.delete_centre. Les vues CRUD utilisent déjà les contrôles add, change et delete. Ajoute login_required au-dessus de permission_required pour envoyer d’abord les visiteurs anonymes vers la connexion. Un membre connecté qui ne possède pas le droit reçoit ensuite une réponse 403 grâce à raise_exception=True. Cette distinction explique clairement deux situations différentes : identité manquante ou autorisation insuffisante.",
+        "code": "from django.contrib.auth.decorators import login_required, permission_required\nfrom django.shortcuts import get_object_or_404, redirect, render\nfrom .forms import CentreForm\nfrom .models import Centre\n\n@login_required\n@permission_required(\"centres.change_centre\", raise_exception=True)\ndef modifier(request, pk):\n    centre = get_object_or_404(Centre, pk=pk)\n    if request.method == \"POST\":\n        form = CentreForm(request.POST, instance=centre)\n        if form.is_valid():\n            form.save()\n            return redirect(\"centres:detail\", pk=centre.pk)\n    else:\n        form = CentreForm(instance=centre)\n    return render(request, \"centres/formulaire.html\", {\"form\": form, \"centre\": centre})",
+        "language": "python",
+        "filename": "centres/views.py"
+      },
+      {
+        "title": "Adapter la navigation sans lui confier la sécurité",
+        "body": "Dans un template, perms expose les permissions de l’utilisateur. Masquer les boutons indisponibles évite les impasses et clarifie ce que la personne peut faire. Cela ne protège pas la vue : quelqu’un peut saisir l’URL ou envoyer une requête directement. Conserve donc les décorateurs côté serveur. Pour plusieurs gestionnaires, crée un groupe dans l’administration et attribue-lui les permissions nécessaires. is_staff sert à l’accès à l’administration ; il ne remplace pas ces droits métier.",
+        "code": "{% if perms.centres.add_centre %}\n  <a href=\"{% url 'centres:creer' %}\">Ajouter un centre</a>\n{% endif %}\n{% if perms.centres.change_centre %}\n  <a href=\"{% url 'centres:modifier' centre.pk %}\">Modifier</a>\n{% endif %}\n{% if perms.centres.delete_centre %}\n  <a href=\"{% url 'centres:supprimer' centre.pk %}\">Supprimer</a>\n{% endif %}",
+        "language": "html",
+        "filename": "Navigation et fiche de centre"
+      },
+      {
+        "title": "Contrôler trois profils et le périmètre des données",
+        "body": "Vérifie l’application avec un visiteur, un membre ordinaire et un gestionnaire autorisé. Le visiteur rejoint la connexion, le membre sans droit reçoit une 403 sur une action protégée et le gestionnaire peut agir. Teste aussi les URL directement. Les permissions standard portent ici sur un type de modèle : elles n’attribuent pas automatiquement certaines salles à certains gestionnaires. Si ce besoin apparaît, ajoute une relation et filtre les objets accessibles dans la vue, avant de les lire ou de les modifier.",
+        "bullets": [
+          "Visiteur anonyme : redirection vers la connexion.",
+          "Membre connecté sans permission : action refusée avec 403.",
+          "Gestionnaire autorisé : opération permise.",
+          "Restriction à certaines salles : règle métier supplémentaire à implémenter."
+        ]
+      }
+    ],
+    "takeaway": "login_required contrôle la connexion. permission_required contrôle le droit d’agir. Les templates reflètent ces droits, mais le serveur les impose.",
+    "exercise": {
+      "prompt": "Complète le nom du décorateur qui impose la connexion avant de vérifier les permissions.",
+      "code": "@___\n@permission_required('centres.change_centre', raise_exception=True)\ndef modifier(request, pk):\n    centre = get_object_or_404(Centre, pk=pk)\n    form = CentreForm(instance=centre)\n    return render(request, 'centres/formulaire.html', {'form': form, 'centre': centre})",
+      "answers": [
+        "login_required"
+      ],
+      "hint": "Il exige une session authentifiée et redirige sinon vers LOGIN_URL.",
+      "explanation": "login_required traite les visiteurs anonymes. permission_required vérifie ensuite le droit de modification du compte connecté."
+    },
+    "quiz": [
+      {
+        "question": "Un simple @login_required suffit-il à réserver la suppression aux gestionnaires ?",
+        "options": [
+          "Oui, tous les membres ont les mêmes droits",
+          "Oui, si le bouton est rouge",
+          "Non, il faut aussi contrôler la permission de suppression",
+          "Non, il faut supprimer toute authentification"
+        ],
+        "correct": 2,
+        "hint": "Le décorateur vérifie l’identité, pas un rôle métier précis.",
+        "explanation": "Tout membre authentifié passe login_required. La permission centres.delete_centre doit être contrôlée pour réserver la suppression aux comptes autorisés."
+      },
+      {
+        "question": "Un membre connecté n’a pas centres.change_centre. Que produit permission_required avec raise_exception=True ?",
+        "options": [
+          "Une réponse 403",
+          "Une création automatique de permission",
+          "Une modification autorisée après un avertissement",
+          "Une suppression de son compte"
+        ],
+        "correct": 0,
+        "hint": "Son identité est connue, mais l’opération lui est interdite.",
+        "explanation": "Le contrôle lève PermissionDenied, qui conduit à une réponse 403. Il n’attribue pas le droit manquant."
+      },
+      {
+        "question": "La permission change_centre limite-t-elle automatiquement un gestionnaire à ses propres centres ?",
+        "options": [
+          "Oui, Django devine les centres qu’il possède",
+          "Oui, si son nom figure dans la description",
+          "Oui, à partir de son adresse e-mail",
+          "Non, cette restriction exige une règle et un filtrage supplémentaires"
+        ],
+        "correct": 3,
+        "hint": "La permission standard vise le modèle ; une propriété par objet demande une logique dédiée.",
+        "explanation": "Le contrôle standard permet la modification du type Centre. Il faut modéliser puis vérifier la relation de propriété pour limiter les objets accessibles."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quelle différence entre une redirection vers la connexion et une 403 ?",
+        "back": "La redirection demande une identité authentifiée. Une 403 refuse une action à laquelle le compte n’a pas accès."
+      },
+      {
+        "front": "Masquer un bouton avec perms protège-t-il la vue ?",
+        "back": "Non. Cela rend l’interface cohérente ; les décorateurs et contrôles côté serveur doivent toujours vérifier les droits."
+      }
+    ]
+  },
+  {
+    "id": "a6",
+    "moduleId": "auth",
+    "order": 23,
+    "title": "Permettre une inscription correctement validée",
+    "shortTitle": "Créer un compte",
+    "duration": 17,
+    "pages": "90–95",
+    "intro": "Le superutilisateur n’est pas un compte destiné aux visiteurs. Tu vas proposer un formulaire d’inscription qui crée un membre ordinaire, vérifie les données côté serveur et utilise le mécanisme Django de hachage des mots de passe.",
+    "objectives": [
+      "Adapter UserCreationForm au modèle accounts.User",
+      "Valider les deux mots de passe côté serveur",
+      "Créer un compte ordinaire puis orienter vers la connexion"
+    ],
+    "sections": [
+      {
+        "title": "Choisir le formulaire prévu pour les mots de passe",
+        "body": "UserCreationForm gère les deux saisies de mot de passe, leur concordance et les validateurs configurés. Il faut adapter son modèle à accounts.User, puisque le projet utilise un utilisateur personnalisé. Nous ajoutons un champ email obligatoire dans ce formulaire et limitons les champs de profil exposés à username et email. password1 et password2 sont fournis par la classe de base. L’inscription ne doit jamais proposer is_staff, is_superuser ou les permissions dans des champs modifiables par le visiteur.",
+        "code": "from django import forms\nfrom django.contrib.auth import get_user_model\nfrom django.contrib.auth.forms import UserCreationForm\n\nclass InscriptionForm(UserCreationForm):\n    email = forms.EmailField(required=True)\n\n    class Meta(UserCreationForm.Meta):\n        model = get_user_model()\n        fields = (\"username\", \"email\")",
+        "language": "python",
+        "filename": "accounts/forms.py"
+      },
+      {
+        "title": "Créer le compte uniquement après validation",
+        "body": "La vue affiche un formulaire vierge en GET, puis lie les données en POST. Si la validation échoue, elle réaffiche les erreurs sans créer de compte. Si elle réussit, form.save() utilise le traitement prévu par UserCreationForm pour enregistrer un mot de passe haché. La personne est ensuite redirigée vers la connexion ; l’inscription ne l’authentifie pas automatiquement dans cette version. Le nouvel utilisateur conserve les valeurs ordinaires du modèle : il ne devient ni staff ni superutilisateur.",
+        "code": "from django.shortcuts import redirect, render\nfrom .forms import InscriptionForm\n\ndef inscription(request):\n    form = InscriptionForm(\n        request.POST if request.method == \"POST\" else None,\n    )\n    if request.method == \"POST\" and form.is_valid():\n        form.save()\n        return redirect(\"accounts:connexion\")\n    return render(request, \"accounts/inscription.html\", {\"form\": form})",
+        "language": "python",
+        "filename": "accounts/views.py"
+      },
+      {
+        "title": "Faire de la validation serveur la règle de référence",
+        "body": "Un attribut HTML pattern peut guider la saisie dans le navigateur, mais il peut être contourné. Il ne constitue donc pas la règle de sécurité du compte. Conserve les validateurs de mots de passe dans AUTH_PASSWORD_VALIDATORS et laisse le formulaire les appliquer. Les messages d’aide et d’erreur de form.as_p permettent de comprendre une saisie refusée. Ajoute path(\"inscription/\", views.inscription, name=\"inscription\") dans accounts.urls, puis un lien vers accounts:inscription depuis la page de connexion.",
+        "code": "{% extends \"base.html\" %}\n{% block content %}\n  <h1>Créer un compte Musculor</h1>\n  <form method=\"post\">\n    {% csrf_token %}\n    {{ form.as_p }}\n    <button type=\"submit\">Créer mon compte</button>\n  </form>\n  <a href=\"{% url 'accounts:connexion' %}\">Déjà inscrit ? Se connecter</a>\n{% endblock %}",
+        "language": "html",
+        "filename": "accounts/templates/accounts/inscription.html"
+      },
+      {
+        "title": "Vérifier les erreurs et les privilèges",
+        "body": "Teste deux mots de passe différents, un identifiant déjà utilisé et une saisie qui échoue aux validateurs actifs. Aucun compte ne doit être créé dans ces cas. Une inscription valide doit produire un utilisateur ordinaire, capable de se connecter mais dépourvu des droits de gestion des centres. Ne stocke jamais un mot de passe par affectation directe à user.password. create_user() et set_password() savent le hacher ; cependant, create_user() seul n’applique pas automatiquement les validateurs de AUTH_PASSWORD_VALIDATORS, contrairement au parcours de formulaire présenté ici.",
+        "bullets": [
+          "Les contrôles essentiels ont lieu côté serveur.",
+          "La confirmation du mot de passe évite une erreur de saisie.",
+          "Le compte créé n’obtient aucun privilège de gestion automatique.",
+          "Une inscription réussie peut être suivie d’une connexion distincte."
+        ]
+      }
+    ],
+    "takeaway": "UserCreationForm adapté à accounts.User centralise la validation des mots de passe et leur enregistrement haché. Un visiteur s’inscrit comme membre ordinaire.",
+    "exercise": {
+      "prompt": "Complète la classe de formulaire qui gère l’inscription avec deux mots de passe et leur validation.",
+      "code": "class InscriptionForm(___):\n    class Meta(UserCreationForm.Meta):\n        model = get_user_model()\n        fields = ('username', 'email')",
+      "answers": [
+        "UserCreationForm"
+      ],
+      "hint": "Son nom correspond à la création d’un utilisateur.",
+      "explanation": "UserCreationForm fournit password1, password2, leur validation et le hachage lors de la sauvegarde. Sa classe Meta doit viser le modèle personnalisé."
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi un pattern HTML ne suffit-il pas à valider un mot de passe ?",
+        "options": [
+          "Parce qu’il est toujours ignoré par tous les navigateurs",
+          "Parce qu’une requête peut contourner les contrôles du navigateur",
+          "Parce que Django stocke les mots de passe en clair",
+          "Parce que le formulaire ne peut jamais afficher d’erreur"
+        ],
+        "correct": 1,
+        "hint": "Le serveur doit rester fiable même si la requête n’est pas issue de ton formulaire.",
+        "explanation": "Les attributs HTML améliorent l’aide à la saisie, mais ils ne remplacent pas les validations côté serveur."
+      },
+      {
+        "question": "Quelles permissions un compte créé par ce formulaire reçoit-il automatiquement ?",
+        "options": [
+          "Toutes les permissions d’administration",
+          "La suppression de tous les centres",
+          "Aucun privilège de gestion supplémentaire",
+          "Le statut de superutilisateur pendant une journée"
+        ],
+        "correct": 2,
+        "hint": "Le formulaire ne contient aucun champ de privilège.",
+        "explanation": "Un compte ordinaire est créé. Les groupes, permissions et statuts de gestion doivent être attribués séparément par une action autorisée."
+      },
+      {
+        "question": "Quelle affirmation décrit correctement create_user() ?",
+        "options": [
+          "Il hache le mot de passe, mais n’applique pas automatiquement tous les validateurs de AUTH_PASSWORD_VALIDATORS",
+          "Il sauvegarde toujours le mot de passe en clair",
+          "Il crée forcément un superutilisateur",
+          "Il remplace tous les contrôles d’un formulaire d’inscription"
+        ],
+        "correct": 0,
+        "hint": "Hachage et validation de la robustesse sont deux opérations distinctes.",
+        "explanation": "create_user() gère notamment le hachage. Un parcours d’inscription doit aussi valider les entrées et les mots de passe, par exemple avec UserCreationForm."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Pourquoi adapter UserCreationForm.Meta.model ?",
+        "back": "Le projet utilise accounts.User. Le formulaire doit créer ce modèle, récupéré avec get_user_model(), et non supposer le modèle intégré par défaut."
+      },
+      {
+        "front": "Hacher un mot de passe revient-il à le valider ?",
+        "back": "Non. Le hachage protège son stockage ; les validateurs vérifient les règles applicables au mot de passe choisi."
+      }
+    ]
+  },
+  {
+    "id": "a7",
+    "moduleId": "auth",
+    "order": 24,
+    "title": "Faire évoluer Musculor pas à pas",
+    "shortTitle": "Le projet final",
+    "duration": 18,
+    "pages": "96",
+    "intro": "Tu disposes maintenant des bases d’un site Django avec données, CRUD et comptes. Le support propose quatre prolongements : images, pagination, mot de passe oublié et validation de l’adresse e-mail. Tu vas transformer ces idées en étapes de projet vérifiables.",
+    "objectives": [
+      "Paginer une liste de centres de façon déterministe",
+      "Identifier les éléments nécessaires à un téléversement d’image",
+      "Préparer une récupération de mot de passe avec les outils Django"
+    ],
+    "sections": [
+      {
+        "title": "Paginer la liste des centres",
+        "body": "Une liste longue devient difficile à parcourir. Paginator découpe un ensemble d’objets en pages et get_page() récupère la page demandée. Trie les centres avec un ordre stable ; nom suivi de pk départage les salles portant le même nom. La vue ci-dessous remplace la liste complète par page_obj. Dans le template, parcours page_obj et ajoute des liens utilisant has_previous, previous_page_number, has_next et next_page_number, en vérifiant les booléens avant d’appeler les méthodes de navigation.",
+        "code": "from django.core.paginator import Paginator\nfrom django.shortcuts import render\nfrom .models import Centre\n\ndef accueil(request):\n    centres = Centre.objects.order_by(\"nom\", \"pk\")\n    paginator = Paginator(centres, 6)\n    page_obj = paginator.get_page(request.GET.get(\"page\"))\n    return render(request, \"centres/accueil.html\", {\"page_obj\": page_obj})",
+        "language": "python",
+        "filename": "centres/views.py, extension pagination"
+      },
+      {
+        "title": "Ajouter une image avec toute la chaîne nécessaire",
+        "body": "Un champ ImageField peut stocker la référence d’une image et nécessite Pillow. Cette évolution implique une migration du modèle, l’ajout du champ dans CentreForm, un formulaire HTML avec enctype=\"multipart/form-data\" et la transmission de request.FILES au formulaire côté serveur. Il faut également configurer le stockage des médias et leur affichage. Définis des limites de taille et valide les fichiers reçus. Le simple ajout d’un champ image au template ne suffit pas à rendre le téléversement fonctionnel.",
+        "code": "<!-- Formulaire d’une future extension avec image -->\n<form method=\"post\" enctype=\"multipart/form-data\">\n  {% csrf_token %}\n  {{ form.as_p }}\n  <button type=\"submit\">Enregistrer</button>\n</form>",
+        "language": "html",
+        "filename": "centres/formulaire.html, extension image",
+        "callout": "Après ajout du champ au modèle et au formulaire, utilise CentreForm(request.POST, request.FILES) en création, et ajoute instance=centre en modification. Les fichiers envoyés sont distincts des champs texte."
+      },
+      {
+        "title": "S’appuyer sur les vues de récupération du mot de passe",
+        "body": "Django propose un parcours de réinitialisation avec lien et jeton temporaire. Il comprend la demande par e-mail, la confirmation de l’envoi, le choix d’un nouveau mot de passe et la confirmation finale. Tu peux ajouter les routes intégrées sous un préfixe séparé, puis créer les templates registration attendus. En développement, le backend e-mail console permet d’inspecter le message sans envoyer de mail réel. La vérification d’adresse e-mail lors de l’inscription constitue un autre parcours à concevoir ; elle n’est pas activée automatiquement par UserCreationForm.",
+        "code": "# musculor/urls.py : imports path et include déjà présents\nurlpatterns += [\n    path(\"auth/\", include(\"django.contrib.auth.urls\")),\n]\n\n# musculor/settings.py : pour les essais en développement\nEMAIL_BACKEND = \"django.core.mail.backends.console.EmailBackend\"",
+        "language": "python",
+        "filename": "Routes intégrées et réglage e-mail de développement"
+      },
+      {
+        "title": "Terminer par une démonstration du projet",
+        "body": "Choisis une seule extension, définis le résultat observable, puis construis-la de bout en bout avant d’en commencer une autre. Pour la pagination, crée plus de six salles et vérifie la navigation. Pour les images, teste un fichier accepté et un fichier refusé. Pour la récupération de mot de passe, suis le lien reçu dans la console et reconnecte-toi avec le nouveau secret. Termine en montrant le parcours visiteur, l’inscription, la connexion, les restrictions et les quatre opérations CRUD avec des données fictives.",
+        "bullets": [
+          "Catalogue : liste et fiche détail fonctionnelles, y compris une fiche absente.",
+          "Gestion : création, modification et suppression contrôlées par les permissions.",
+          "Comptes : inscription, connexion et déconnexion POST.",
+          "Extension choisie : comportement réussi, erreur prévue et retour clair à l’utilisateur."
+        ],
+        "callout": "Ces extensions prolongent le programme ; elles demandent les réglages et templates indiqués. Les ateliers de ce site servent à comprendre et à s’entraîner, tandis que le projet Django s’exécute dans ton environnement Python."
+      }
+    ],
+    "takeaway": "Une extension est terminée quand tout le parcours fonctionne, y compris ses erreurs. Commence par un objectif limité et utilise les composants Django adaptés.",
+    "exercise": {
+      "prompt": "Complète la méthode de Paginator qui récupère la page demandée dans la requête.",
+      "code": "page_obj = paginator.___(request.GET.get(\"page\"))",
+      "answers": [
+        "get_page"
+      ],
+      "hint": "Son nom signifie « obtenir la page ».",
+      "explanation": "get_page() retourne un objet Page à partir du numéro demandé. Tu peux parcourir cet objet et utiliser ses informations de navigation dans le template."
+    },
+    "quiz": [
+      {
+        "question": "Pourquoi trier un QuerySet avant de le paginer ?",
+        "options": [
+          "Pour hacher les mots de passe plus rapidement",
+          "Pour obtenir un ordre déterministe entre les pages",
+          "Pour supprimer les centres sans description",
+          "Pour désactiver les migrations"
+        ],
+        "correct": 1,
+        "hint": "Les objets doivent garder un ordre prévisible lorsqu’on passe à la page suivante.",
+        "explanation": "Un ordre stable rend la pagination cohérente. Ajouter pk après nom départage les objets qui possèdent le même nom."
+      },
+      {
+        "question": "Où Django place-t-il les fichiers téléversés par un formulaire multipart ?",
+        "options": [
+          "Uniquement dans request.GET",
+          "Dans la variable user.password",
+          "Dans request.FILES",
+          "Dans le nom de l’URL"
+        ],
+        "correct": 2,
+        "hint": "Le contenu binaire est reçu séparément des champs texte.",
+        "explanation": "Les fichiers sont disponibles dans request.FILES. Il faut les transmettre au formulaire avec les données POST et prévoir le stockage approprié."
+      },
+      {
+        "question": "UserCreationForm active-t-il automatiquement la validation de l’adresse e-mail par un lien ?",
+        "options": [
+          "Oui, pour toutes les adresses Gmail",
+          "Oui, dès qu’email est obligatoire",
+          "Oui, uniquement pour les superutilisateurs",
+          "Non, ce parcours demande une mise en place supplémentaire"
+        ],
+        "correct": 3,
+        "hint": "Créer un compte et prouver la possession de l’adresse sont deux étapes différentes.",
+        "explanation": "Le formulaire crée un compte après validation des entrées. Une vérification d’adresse e-mail avec jeton et message nécessite un parcours dédié."
+      }
+    ],
+    "flashcards": [
+      {
+        "front": "Quels éléments faut-il prévoir pour ajouter une image ?",
+        "back": "ImageField et migration, Pillow, champ du formulaire, enctype multipart, request.FILES, stockage des médias, affichage et validation des fichiers."
+      },
+      {
+        "front": "Quel est un bon critère de fin pour une extension ?",
+        "back": "Le parcours complet fonctionne avec un cas valide et un cas d’erreur, sans casser les comptes, les permissions ou les opérations CRUD existantes."
+      }
+    ]
+  }
+]
